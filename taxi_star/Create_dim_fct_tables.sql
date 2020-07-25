@@ -1,61 +1,41 @@
---drop  TABLESPACE ts_sa_app_data_01;
+--drop  TABLESPACE TS_REFERENCES_EXT_DATA_01
+--INCLUDING  CONTENTS;
 --Storage Level
-CREATE TABLESPACE ts_sa_app_data_01
-DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_sa_app_data_01.dat'
-SIZE 200M
- AUTOEXTEND ON NEXT 150M
+CREATE TABLESPACE ts_sa_app_data
+DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_sa_app_data_1.dat'
+SIZE 1000M
+ AUTOEXTEND ON NEXT 250M
  SEGMENT SPACE MANAGEMENT AUTO;
-
- CREATE USER u_dw_ext_app
+--drop user u_dw_ext_app
+ alter USER u_dw_ext_app
   IDENTIFIED BY "1"
-    DEFAULT TABLESPACE ts_sa_app_data_01;
+    DEFAULT TABLESPACE ts_sa_app_data QUOTA unlimited ON ts_sa_app_data;
 GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_ext_app;
 
---------------------------------------------------------------------------------
---Cleansing Level
-CREATE TABLESPACE ts_dw_clean
-DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_dw_clean.dat'
-SIZE 200M
- AUTOEXTEND ON NEXT 150M
- SEGMENT SPACE MANAGEMENT AUTO;
- 
- CREATE USER u_dw_clean
-  IDENTIFIED BY "1"
-    DEFAULT TABLESPACE ts_dw_clean;
-GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_clean;
- 
+
+--select * from v$tablespace;
 --------------------------------------------------------------------------------
 --Level loading
-
-CREATE TABLESPACE ts_dw_data_l_01
-DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_dw_data_l_01.dat'
+select * from v$DATABASE;
+drop TABLESPACE TS_DW_DATA;
+CREATE TABLESPACE ts_dw_data
+DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_dw_data_1.dat'
 SIZE 200M
  AUTOEXTEND ON NEXT 100M
  SEGMENT SPACE MANAGEMENT AUTO;
 
-
- CREATE USER u_dw_load
+--drop USER u_dw_data;
+ create USER u_dw_data
   IDENTIFIED BY "1"
-    DEFAULT TABLESPACE ts_dw_data_l_01;
-GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_load;
+   DEFAULT TABLESPACE ts_dw_data QUOTA 150M ON ts_dw_data;
+GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_data;
+
 
 --------------------------------------------------------------------------------
---DW– Prepare 
-CREATE TABLESPACE ts_dw_prep_l_01
-DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_dw_prep_l_01.dat'
-SIZE 200M
- AUTOEXTEND ON NEXT 100M
- SEGMENT SPACE MANAGEMENT AUTO;
- 
- CREATE USER u_dw_prer
-  IDENTIFIED BY "1"
-    DEFAULT TABLESPACE ts_dw_prep_l_01;
-GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_prer;
 
  
- 
 --------------------------------------------------------------------------------
- --STAR – Level
+ --STAR ï¿½ Level
 
 CREATE TABLESPACE ts_fct_tax_month_01
 DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_fct_tax_month_01.dat'
@@ -63,9 +43,11 @@ SIZE 500M
  AUTOEXTEND ON NEXT 200M
  SEGMENT SPACE MANAGEMENT AUTO;
  
- CREATE USER u_dw_fct_tax
+ --CREATE USER 
+ ALTER USER
+    u_dw_fct_tax
   IDENTIFIED BY "1"
-    DEFAULT TABLESPACE ts_fct_tax_month_01;
+    DEFAULT TABLESPACE ts_fct_tax_month_01 QUOTA unlimited ON ts_fct_tax_month_01;
 grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_fct_tax;
  ------------------------------------------------------------------------------- 
  
@@ -75,9 +57,11 @@ SIZE 500M
  AUTOEXTEND ON NEXT 200M
  SEGMENT SPACE MANAGEMENT AUTO;
  
- CREATE USER u_dw_dim_tax
+ --CREATE USER 
+ ALTER USER
+ u_dw_dim_tax
   IDENTIFIED BY "1"
-    DEFAULT TABLESPACE ts_dim_tax_01;
+    DEFAULT TABLESPACE ts_dim_tax_01 QUOTA unlimited ON ts_dim_tax_01;
 GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_dim_tax;
 
 grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_dim_tax;
@@ -90,6 +74,7 @@ grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_dim_tax
 /*==============================================================*/
 /* Table: "dim_customer"                                        */
 /*==============================================================*/
+--drop table u_dw_dim_tax.dim_customer;
 create table u_dw_dim_tax.dim_customer 
 (
    "id"                 int                  not null,
@@ -225,6 +210,7 @@ create table u_dw_dim_tax.dim_vehicle"
    constraint PK_DIM_VEHICLE primary key ("id")
 );
 
+--drop table u_dw_dim_tax.dim_vehicle
 /*
 alter table u_dw_dim_tax.fct_taxi_trip
    drop constraint FK_FCT_TAXI_REFERENCE_DIM_TRIP;
@@ -255,6 +241,7 @@ drop table u_dw_fct_tax.fct_taxi_trip cascade constraints;
 /*==============================================================*/
 /* Table: "fct_taxi_trip"         u_dw_fct_tax                              */
 /*=============================== ===============================*/
+
 create table u_dw_fct_tax.fct_taxi_trip
 (
    id_dim_car         int,
@@ -273,7 +260,9 @@ create table u_dw_fct_tax.fct_taxi_trip
 PARTITION BY HASH (id_dim_car, id_dim_customer,id_dim_date, id_dim_driver, 
 id_dim_invoice, id_dim_location ,id_dim_trip)
    PARTITIONS 4 ;
-
+ 
+ --drop table u_dw_fct_tax.fct_taxi_trip;
+/*
 alter table u_dw_fct_tax.fct_taxi_trip
    add constraint FK_FCT_TAXI_REFERENCE_DIM_TRIP foreign key ("id_dim_car")
       references u_dw_dim_tax.dim_trip ("id") ;
@@ -303,4 +292,4 @@ alter table u_dw_fct_tax.fct_taxi_trip
 alter table u_dw_fct_tax.fct_taxi_trip
    add constraint FK_FCT_TAXI_REFERENCE_DIM_VEHI foreign key ("id_dim_trip")
       references u_dw_dim_tax.dim_vehicle ("id");
-
+*/

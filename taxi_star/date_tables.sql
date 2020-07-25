@@ -1,4 +1,4 @@
-drop table sa_calendar;
+--drop table sa_calendar;
 create table sa_calendar as 
 SELECT 
 CAST((TO_CHAR(sd+rn , 'MM')||TO_CHAR(sd+rn , 'DD')||TO_CHAR(sd+rn , 'YYYY') ) AS INTEGER) date_id,
@@ -48,16 +48,16 @@ CAST((TO_CHAR(sd+rn , 'MM')||TO_CHAR(sd+rn , 'DD')||TO_CHAR(sd+rn , 'YYYY') ) AS
 FROM
   ( 
     SELECT 
-      TO_DATE( '12/31/2018', 'MM/DD/YYYY' ) sd,
+      TO_DATE( '12/31/2013', 'MM/DD/YYYY' ) sd,
       rownum rn
     FROM dual
-      CONNECT BY level <= 1825
+      CONNECT BY level <= 2920
   );
 
-select * from sa_calendar;
-
-drop table t_day;
-create table t_day  as 
+--select * from sa_calendar;
+-- create t_day all day in year
+--drop table u_dw_da.tat_day;
+create table u_dw_data.t_day  as 
     select  c.DATE_ID , 
             c.DAY_VCHAR_ID,
             c.DAY_NAME,
@@ -66,19 +66,22 @@ create table t_day  as
             c.DAY_NUMBER_IN_YEAR
     from sa_calendar c;
     
-  select * from t_day order by date_id desc;   
-drop table t_week;
-create table t_week  as 
+--create t_week all week in year
+drop table u_dw_data.t_week;
+create table u_dw_data.t_week  as 
     select  c.DATE_ID week_id,
             c.WEEK_ENDING_DATE-6 BEG_WEEK_DATE,
             c.WEEK_ENDING_DATE END_WEEK_DATE, 
             c.CALENDAR_WEEK_NUMBER            
     from sa_calendar c 
-    where c.date_id=CAST((TO_CHAR(WEEK_ENDING_DATE , 'MM')||TO_CHAR(WEEK_ENDING_DATE , 'DD')||TO_CHAR(WEEK_ENDING_DATE , 'YYYY') ) AS INTEGER);    
+    where
+        c.date_id=CAST((TO_CHAR(WEEK_ENDING_DATE , 'MM')
+        ||TO_CHAR(WEEK_ENDING_DATE , 'DD')
+        ||TO_CHAR(WEEK_ENDING_DATE , 'YYYY') ) AS INTEGER);    
 
- 
-drop table t_month;
-create table t_month as 
+ --create all month in the yar
+drop table u_dw_data.t_month;
+create table u_dw_data.t_month as 
     select 
     c.date_id month_id,
     c.CALENDAR_MONTH_NAME,
@@ -87,26 +90,29 @@ create table t_month as
     c.END_OF_CAL_MONTH - c.DAYS_IN_CAL_MONTH+1 as BEG_OF_CAL_MONTH,
     c.END_OF_CAL_MONTH    
     from sa_calendar c
-    where c.date_id=CAST((TO_CHAR(END_OF_CAL_MONTH , 'MM')||TO_CHAR(END_OF_CAL_MONTH , 'DD')||TO_CHAR(END_OF_CAL_MONTH , 'YYYY') ) AS INTEGER);    
+    where 
+        c.date_id=CAST((TO_CHAR(END_OF_CAL_MONTH , 'MM')
+        ||TO_CHAR(END_OF_CAL_MONTH , 'DD')
+        ||TO_CHAR(END_OF_CAL_MONTH , 'YYYY') ) AS INTEGER);    
 
-select * from t_month;
-
-drop table t_quarter;
-create table t_quarter as 
+-- create all quareter in the year
+drop table u_dw_data.t_quarter;
+create table u_dw_data.t_quarter as 
     select 
         c.date_id as quarter_id,
         c.CALENDAR_QUARTER_NUMBER,
         c.DAYS_IN_CAL_QUARTER,
         c.BEG_OF_CAL_QUARTER,
-        c.END_OF_CAL_QUARTER,
-        c.calendar_year
-    from sa_calendar c
-    where c.date_id=CAST((TO_CHAR(BEG_OF_CAL_QUARTER , 'MM')||TO_CHAR(BEG_OF_CAL_QUARTER , 'DD')||TO_CHAR(BEG_OF_CAL_QUARTER , 'YYYY') ) AS INTEGER);    
-select * from t_quarter;
+        c.END_OF_CAL_QUARTER
+       from sa_calendar c
+    where
+        c.date_id=CAST((TO_CHAR(BEG_OF_CAL_QUARTER , 'MM')
+        ||TO_CHAR(BEG_OF_CAL_QUARTER , 'DD')
+        ||TO_CHAR(BEG_OF_CAL_QUARTER , 'YYYY') ) AS INTEGER);    
 
-
-drop table t_year;
-create table t_year as
+--create all years
+drop table u_dw_data.t_year;
+create table u_dw_data.t_year as
     select 
          c.date_id as year_id,
          c.CALENDAR_YEAR,
@@ -114,28 +120,23 @@ create table t_year as
          c.BEG_OF_CAL_YEAR,
          c.END_OF_CAL_YEAR
     from sa_calendar c
-    where c.date_id=CAST((TO_CHAR(BEG_OF_CAL_YEAR , 'MM')||TO_CHAR(BEG_OF_CAL_YEAR , 'DD')||TO_CHAR(BEG_OF_CAL_YEAR , 'YYYY') ) AS INTEGER);    
-    
-select * from t_quarter;
-
---select * from t_day d, t_week w where d.DAY_VCHAR_ID between w.WEEK_BEGIN_DATE and w.WEEK_ENDING_DATE; --week day
-
+    where 
+        c.date_id=CAST((TO_CHAR(BEG_OF_CAL_YEAR , 'MM')
+        ||TO_CHAR(BEG_OF_CAL_YEAR , 'DD')
+        ||TO_CHAR(BEG_OF_CAL_YEAR , 'YYYY') ) AS INTEGER);    
+----------------------------------------------------------------------------------    
+--create dim_date
+--drop table u_dw_dim_tax.dim_date;
+CREATE TABLE u_dw_dim_tax.dim_date as
 select * from 
-      t_day d
-    , t_week w 
-    , t_month m 
-    , t_quarter q 
-    , t_year y
+      u_dw_data.t_day d
+    , u_dw_data.t_week w 
+    , u_dw_data.t_month m 
+    , u_dw_data.t_quarter q 
+    , u_dw_data.t_year y
 where 
     (d.DAY_VCHAR_ID between w.beg_week_date and w.end_week_date )
     and (d.DAY_VCHAR_ID between m.beg_of_cal_month and m.END_OF_CAL_MONTH)
     and (d.DAY_VCHAR_ID between q.BEG_OF_CAL_QUARTER and q.end_of_cal_quarter)
     and (d.DAY_VCHAR_ID between y.BEG_OF_CAL_YEAR and y.END_OF_CAL_YEAR)
     order by DAY_VCHAR_ID;
-/*
-select  t_day.date_id ,
-        t_week.end_week_id
-from t_week , t_day 
-group by  t_week.end_week_id, t_day.date_id 
- having t_day.date_id=t_week.end_week_id;
-*/
