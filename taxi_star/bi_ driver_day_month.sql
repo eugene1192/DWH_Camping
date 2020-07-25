@@ -1,3 +1,4 @@
+
 WITH like_fct_daily AS(
     SELECT 
         TRUNC(a.date_id, 'MONTH') date_id     -- group by month
@@ -25,8 +26,8 @@ WITH like_fct_daily AS(
 )
 SELECT
     date_id
- --   ,full_driver_name
-    , vehicle 
+    ,full_driver_name
+ -- , vehicle 
     ,SUM(ct.distance)                    tot_distane
     ,round(AVG(ct.raiting), 1)           avg_raiting
     ,SUM(finished)                       cnt_finised
@@ -36,21 +37,18 @@ SELECT
     || ' %' percent_finished
     ,to_char(round(SUM(canceled)/(SUM(finished)+SUM(canceled))*100,2)) 
     || ' %' percent_canceled
-    ,GROUPING_ID(date_id, vehicle) AS grouping_id 
-
- FROM
+    ,GROUPING(date_id) AS f1g_date_id
+    ,GROUPING(full_driver_name) AS f1g_full_driver_name
+FROM
     like_fct_daily ct
-GROUP BY CUBE(
-     date_id
- --, full_driver_name
-   , vehicle
+GROUP BY CUBE (
+    full_driver_name
+    ,date_id 
+ --, vehicle
     )
  ORDER BY 
       date_id
-  --, full_driver_name
-    , vehicle
-  --DESC
-;
-
-
-
+    , full_driver_name
+    --, vehicle
+    --  DESC
+ ;

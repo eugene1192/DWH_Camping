@@ -126,6 +126,8 @@ BEGIN
 
 END;
 EXEC load_all_sa;
+select * from u_dw_ext_app.sa_vehicle
+order by manufacturer;
 /*==============================================================*/
 /* Table: SA_TRIP                                               */
 /*==============================================================*/
@@ -196,11 +198,11 @@ EXEC load_all_sa;
 insert into u_dw_ext_app.sa_trip
 WITH cte_rnd AS (
     SELECT /* +MATERIALIZE*/                                        
-                        floor(dbms_random.value(1, 314000))                                     AS driver_rn,
-        floor(dbms_random.value(1, 314000))                                                     AS customer_rn,
-        floor(dbms_random.value(1, 500))                                                        AS vehicle_rn,
+                        floor(dbms_random.value(1, 1000))                                     AS driver_rn,
+        floor(dbms_random.value(1, 31400))                                                     AS customer_rn,
+        floor(dbms_random.value(1, 30))                                                        AS vehicle_rn,
         country_desc,
-        TO_DATE('02-JUN-2014', 'DD-MM-YYYY HH24:MI:SS') + dbms_random.value(0, 1825)            date_id,
+        TO_DATE('02-JUN-2019', 'DD-MM-YYYY HH24:MI:SS') + dbms_random.value(0, 200)            date_id,
         trunc(dbms_random.value(0, 200))                                                        distance,
         trunc(dbms_random.value(1, 5))                                                          raiting,
         CASE
@@ -260,7 +262,7 @@ WITH cte_rnd AS (
                                         a.*,
         ROW_NUMBER()
         OVER(PARTITION BY 1
-             ORDER BY manufacturer, model_vhl, licence_plate
+             ORDER BY manufacturer, model_vhl
         ) AS rn
     FROM
         (
@@ -270,6 +272,8 @@ WITH cte_rnd AS (
                 licence_plate
             FROM
                 u_dw_ext_app.sa_vehicle
+                where manufacturer in( 'Volkswagen', 'Ford', 'Chevrolet') and manuf_year=2019
+               -- and model_vhl  in('Camaro', 'Corvette', 'Cruze', 'Focus', 'Fusion' , 'Golf' , 'Passat',  'Tiguan' )
         ) a
 )
 SELECT
@@ -305,52 +309,6 @@ FROM
     INNER JOIN cte_vehcl  vehcl ON c.vehicle_rn = vehcl.rn;
 
 commit;
-alter session set nls_date_format = 'dd-mm-yyyy HH24:MI:SS';
-select  count(trip_id) from ( select distinct trip_id from u_dw_ext_app.sa_trip); 
 
+select count(*) from u_dw_ext_app.sa_trip;
 
-/*
-CREATE OR REPLACE PROCEDURE load_sa_trip_pr (loop_cnt_in IN NUMBER)
-    IS
-        cnt NUMBER;
-        
-    BEGIN
-        
-        cnt:=loop_cnt_in;
-        while cnt>0
-            loop
-                 insert into u_dw_ext_app.sa_trip
-SELECT * FROM (
-  SELECT CAST(
-                           (TO_CHAR(date_id, 'DD')
-                           ||TO_CHAR(date_id , 'MM')
-                           ||TO_CHAR(date_id , 'YYYY')
-                           ||TO_CHAR(date_id , 'HH24')
-                           ||TO_CHAR(date_id , 'MI')
-                           ||TO_CHAR(date_id , 'SS') 
-                           ) AS INTEGER) trip_id
-                           , trunc(date_id)
-                    from (
-                        SELECT TO_TIMESTAMP ('01-JAN-2019 00:00:00',  'DD-Mon-YYYY HH24:MI:SS'
-                              ) +dbms_random.value(0,1825) date_id
-                        from dual) a 
-                 ),            
-                (SELECT * from (SELECT FIRST_NAME, last_name, drive_licen from u_dw_ext_app.sa_driver order by (dbms_random.random)) where rownum<2) b,
-                (SELECT * from (SELECT FIRST_NAME, last_name  from u_dw_ext_app.sa_customer order by (dbms_random.random)) where rownum<2) c,
-                (SELECT * from (SELECT MANUFACTURER ,  MODEL_VHL   , LICENCE_PLATE from u_dw_ext_app.sa_vehicle order by (dbms_random.random)) where rownum<2) d,
-                (SELECT COUNTRY_DESC from u_dw_references.lc_countries  where COUNTRY_ID =56) e,
-                (SELECT trunc( dbms_random.value(0,200)) distance from dual) f,
-                ( select 'mil'   distance_measure FROM dual) q,
-                (SELECT trunc( dbms_random.value(1,5)) raiting from dual) w,
-                (SELECT 'Y' status from dual) p,
-                (SELECT trunc( dbms_random.value(10,1000)) coast from dual) g ,
-                (select 'EUR' cyrrency from dual) j;
-        cnt:=cnt-1;
-        end loop;
-END load_sa_trip_pr;
-exec load_sa_trip_pr(1);
-*/
-
-select * from nls_database_parameters
-where parameter in ('NLS_DATE_FORMAT','NLS_DATE_LANGUAGE'); 
-alter session set nls_date_format = 'dd-mm-yyyy HH24:MI:SS';

@@ -36,8 +36,8 @@ SELECT
     || ' %' percent_finished
     ,to_char(round(SUM(canceled)/(SUM(finished)+SUM(canceled))*100,2)) 
     || ' %' percent_canceled
-    ,GROUPING_ID(date_id, vehicle) AS grouping_id 
-
+    ,GROUPING(date_id) AS f1g_date_id
+    ,GROUPING(vehicle) AS f1g_vehcl
  FROM
     like_fct_daily ct
 GROUP BY CUBE(
@@ -49,7 +49,7 @@ GROUP BY CUBE(
       date_id
   --, full_driver_name
     , vehicle
-  --DESC
+ 
 ;
 
 

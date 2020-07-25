@@ -140,3 +140,4 @@ where
     and (d.DAY_VCHAR_ID between q.BEG_OF_CAL_QUARTER and q.end_of_cal_quarter)
     and (d.DAY_VCHAR_ID between y.BEG_OF_CAL_YEAR and y.END_OF_CAL_YEAR)
     order by DAY_VCHAR_ID;
+      
