@@ -2,9 +2,9 @@
 WITH like_fct_daily AS(
     SELECT 
       --TRUNC(a.date_id, 'YEAR') date_id     -- group by YEAR
-        TRUNC(a.date_id, 'Q') date_id           -- group by QUARTER
+      --TRUNC(a.date_id, 'Q') date_id           -- group by QUARTER
       --TRUNC(a.date_id, 'MONTH') date_id     -- group by MONTH
-      --TRUNC(a.date_id, 'DAY') date_id     -- group by DAY
+      TRUNC(a.date_id, 'DD') date_id     -- group by DAY
         ,a.trip_id
         ,a.driver_first_name 
         || ' ' ||
@@ -53,5 +53,5 @@ GROUP BY ROLLUP (
       date_id
     , full_driver_name
     --, vehicle
-    
+    desc
  ;

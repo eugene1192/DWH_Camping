@@ -49,5 +49,5 @@ GROUP BY CUBE (
       date_id
     , full_driver_name
     --, vehicle
-    --  DESC
+      DESC
  ;

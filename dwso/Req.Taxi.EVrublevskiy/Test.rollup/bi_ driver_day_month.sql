@@ -44,11 +44,11 @@ FROM
 GROUP BY ROLLUP (
     date_id 
     ,full_driver_name
-   
  --, vehicle
     )
  ORDER BY 
       date_id
     , full_driver_name
     --, vehicle
+    desc
  ;
