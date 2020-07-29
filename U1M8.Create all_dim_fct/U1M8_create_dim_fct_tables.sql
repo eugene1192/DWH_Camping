@@ -68,46 +68,44 @@ grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_dim_tax
 
 
 
-
---drop table "u_dw_dim_tax"."dim_customer" cascade constraints;
-
-/*==============================================================*/
-/* Table: "dim_customer"                                        */
-/*==============================================================*/
---drop table u_dw_dim_tax.dim_customer;
-create table u_dw_dim_tax.dim_customer 
-(
-   "id"                 int                  not null,
-   "first_name"         VARCHAR(120),
-   "last_name"          VARCHAR(120),
-   "birth_date"         DATE,
-   "age"                INT,
-   "age_group"          VARCHAR(20),
-   "cus_rating"         INT,
-   "efct_dt_age_gp"     DATE,
-   "end_di_age_gp"      DATE,
-   "is_act_ind_age_gp"   VARCHAR(3),
-   constraint PK_DIM_CUSTOMER primary key ("id")
-);
-
-
 --drop table "u_dw_dim_tax"."dim_location" cascade constraints;
 
 /*==============================================================*/
 /* Table: "dim_location"                                        */
 /*==============================================================*/
-create table u_dw_dim_tax.dim_location
-(
-   "id"                 int                  not null,
-   "part_id"            NUMBER,
-   "part_desc"          VARCHAR(120),
-   "region_id"          NUMBER,
-   "region_desc"        VARCHAR(120),
-   "country_id"         NUMBER,
-   "country_desc"       VARCHAR(120),
-   constraint PK_DIM_LOCATION primary key ("id")
+CREATE TABLE u_dw_dim_tax.dim_geo_obj_scd (
+	location_id				NUMBER,
+	loc_key					NVARCHAR2(10),
+    obj_geo_sys_id          NUMBER,
+    geo_system_id           NUMBER,
+    geo_system_code         NVARCHAR2(30),
+    geo_system_desc         NVARCHAR2(100),
+    obj_geo_parts_id        NUMBER,
+    part_id                 NUMBER,
+    part_code               NVARCHAR2(20),
+    part_desc               NVARCHAR2(100),
+    obj_geo_regions_id      NUMBER,
+    region_id               NUMBER,
+    region_code             NVARCHAR2(30),
+    region_desc             NVARCHAR2(100),
+    obj_geo_country_id      NUMBER,
+    country_id              NUMBER,
+    country_desc            NVARCHAR2(100),
+    country_code_a2         NVARCHAR2(10),
+    country_code_a3         NVARCHAR2(20),
+    obj_cntr_group_systems  NUMBER,
+    grp_system_id           NUMBER,
+    grp_system_code         NVARCHAR2(20),
+    grp_system_desc         NVARCHAR2(100),
+    obj_cntr_groups         NUMBER,
+    group_id                NUMBER,
+    group_code              NVARCHAR2(20),
+    group_desc              NVARCHAR2(100),
+    obj_cntr_sub_groups     NUMBER,
+    sub_group_id            NUMBER,
+    sub_group_code          NVARCHAR2(20),
+    sub_group_desc          NVARCHAR2(100)
 );
-
 
 --drop table "u_dw_dim_tax"."dim_trip" cascade constraints;
 
@@ -116,27 +114,18 @@ create table u_dw_dim_tax.dim_location
 /*==============================================================*/
 create table u_dw_dim_tax.dim_trip
 (
-   "id"                 int                  not null,
-   "tr_distance"        DECIMAL(10,3),
-   "tr_time"            TIMESTAMP,
-   "tr_rating_num"      INT,
-   "status_trip"        VARCHAR(2),
+   trip_id              int  not null,
+   sa_trip_id			int
+   tr_distance          DECIMAL(10,3),
+   tr_time              TIMESTAMP,
+   tr_rating_num        INT,
+   status_trip          VARCHAR(2),
+   coast                DECIMAL(10, 3),
+   pay_metod            VARCHAR(50),
+   currency             VARCHAR(50),
+   incert_dt			TIMESTAMP,
+   update_dt            TIMESTAMP
    constraint PK_DIM_TRIP primary key ("id")
-);
-
-
---drop table "u_dw_dim_tax"."dim_invoice" cascade constraints;
-
-/*==============================================================*/
-/* Table: "dim_invoice"                                         */
-/*==============================================================*/
-create table u_dw_dim_tax.dim_invoice 
-(
-   "id"                 INT                  not null,
-   "coast"              DECIMAL(10, 3),
-   "pay_metod"          VARCHAR(50),
-   "currency"           VARCHAR(50),
-   constraint PK_DIM_INVOICE primary key ("id")
 );
 
 
@@ -147,15 +136,16 @@ create table u_dw_dim_tax.dim_invoice
 /*==============================================================*/
 create table u_dw_dim_tax.dim_driver 
 (
-   "id"                 int      not null,
-   "first_name"         VARCHAR(120),
-   "last_name"          VARCHAR(120),
-   "dirth_date"         DATE,
-   "driv_lic_num"       VARCHAR(120),
-   "working"            VARCHAR(3),
-   "age"                INT,
-   "driv_rating"        VARCHAR(50),
-   "driv_rating_num"    int,
+   driver_id                 int      not null,
+   first_name         VARCHAR(120),
+   last_name          VARCHAR(120),
+   dirth_date         DATE,
+   driv_lic_num       VARCHAR(120),
+   age                INT,
+   driv_rating        VARCHAR(50),
+   driv_rating_num    int,
+   incert_dt			TIMESTAMP,
+   update_dt          TIMESTAMP
    constraint PK_DIM_DRIVER primary key ("id")
 );
 
@@ -200,13 +190,15 @@ create table u_dw_dim_tax.dim_date
 /*==============================================================*/
 /* Table: "dim_vehicle"                                         */
 /*==============================================================*/
-create table u_dw_dim_tax.dim_vehicle" 
+create table u_dw_dim_tax.dim_vehicle 
 (
-   "id"                 int                  not null,
-   "licens_plate"       varchar(120),
-   "car_model"          VARCHAR(120),
-   "manuf_year"         int,
-   "total_miliage"      INT,
+   vehicle_id         int                  not null,
+   licens_plate       varchar(120),
+   car_model          VARCHAR(120),
+   manuf_year         int,
+   total_miliage      INT,
+   incert_dt		  TIMESTAMP,
+   update_dt          TIMESTAMP
    constraint PK_DIM_VEHICLE primary key ("id")
 );
 
