@@ -135,12 +135,8 @@ END;
 
 EXEC load_all_sa;
 
-SELECT
-    *
-FROM
-    u_dw_ext_app.sa_vehicle
-ORDER BY
-    manufacturer;
+SELECT * FROM  u_dw_ext_app.sa_vehicle
+ORDER BY  manufacturer;
 /*==============================================================*/
 /* Table: SA_TRIP                                               */
 /*==============================================================*/
@@ -172,6 +168,11 @@ CREATE TABLE u_dw_ext_app.sa_trip (
 );
  
 
+CREATE INDEX sa_trip_idx ON
+   u_dw_ext_app.sa_trip  (
+       trip_id
+    )
+ TABLESPACE ts_sa_app_data;
 
 INSERT INTO u_dw_ext_app.sa_trip
     WITH cte_rnd AS (
@@ -203,7 +204,7 @@ INSERT INTO u_dw_ext_app.sa_trip
                     country_id = 56
             )
         CONNECT BY
-            level < 500000
+            level < 1000000
     ), cte_drv AS (
         SELECT /* +MATERIALIZE*/
                                     a.*,

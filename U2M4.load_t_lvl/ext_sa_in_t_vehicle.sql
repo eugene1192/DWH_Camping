@@ -1,7 +1,7 @@
 SET SERVEROUTPUT ON;
 
 drop table U_DW_EXT_APP.t_vehicle;
-create table U_DW_EXT_APP.t_vehicle 
+create table u_dw_data.t_vehicle 
 (
      vehicle_id  number GENERATED ALWAYS AS IDENTITY
     , MANUF_YEAR NUMBER(10,0)
@@ -10,6 +10,12 @@ create table U_DW_EXT_APP.t_vehicle
     , MILLIAGE NUMBER(20,0)
     , LICENCE_PLATE VARCHAR2(50 BYTE)
 );
+
+CREATE INDEX t_vehicle_idx ON
+   u_dw_data.t_vehicle  (
+       vehicle_id
+    )
+ TABLESPACE ts_dw_data;
 
 CREATE OR REPLACE PROCEDURE ext_sa_t_vehicke IS
 
@@ -23,12 +29,12 @@ CREATE OR REPLACE PROCEDURE ext_sa_t_vehicke IS
         u_dw_ext_app.sa_vehicle;
 
 BEGIN
-    EXECUTE IMMEDIATE 'delete from U_DW_EXT_APP.t_vehicle';
+    EXECUTE IMMEDIATE 'delete from u_dw_data.t_vehicle';
     OPEN cur_sa_veh;
     FETCH cur_sa_veh BULK COLLECT INTO var_t_sa_vehcl;
     CLOSE cur_sa_veh;
     FORALL i IN var_t_sa_vehcl.first..var_t_sa_vehcl.last
-        INSERT INTO u_dw_ext_app.t_vehicle (
+        INSERT INTO u_dw_data.t_vehicle (
             manuf_year,
             manufacturer,
             model_vhl,
@@ -47,7 +53,4 @@ END ext_sa_t_vehicke;
 
 EXEC ext_sa_t_vehicke;
 
-SELECT
-    *
-FROM
-    u_dw_ext_app.t_vehicle;
+SELECT * FROM  u_dw_data.t_vehicle;

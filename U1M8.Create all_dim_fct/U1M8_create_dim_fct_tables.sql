@@ -17,17 +17,17 @@ GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_ext_app;
 --------------------------------------------------------------------------------
 --Level loading
 select * from v$DATABASE;
-drop TABLESPACE TS_DW_DATA;
+drop TABLESPACE TS_DW_DATA INCLUDING CONTENTS;
 CREATE TABLESPACE ts_dw_data
-DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_dw_data_1.dat'
-SIZE 200M
- AUTOEXTEND ON NEXT 100M
+DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_dw_data_2.dat'
+SIZE 1000M
+ AUTOEXTEND ON NEXT 250M
  SEGMENT SPACE MANAGEMENT AUTO;
 
 --drop USER u_dw_data;
  create USER u_dw_data
   IDENTIFIED BY "1"
-   DEFAULT TABLESPACE ts_dw_data QUOTA 150M ON ts_dw_data;
+   DEFAULT TABLESPACE ts_dw_data QUOTA unlimited  ON ts_dw_data;
 GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_data;
 
 
