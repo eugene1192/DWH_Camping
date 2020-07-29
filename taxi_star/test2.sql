@@ -13,25 +13,27 @@ FROM
     ORDER SIBLINGS BY link_type_id   
 )
 SELECT
-    nvl(a.root, - 1)                         t_geo_sys_id,
-    nvl(gs.geo_system_id, - 1)               geo_system_id,
-    nvl(gs.geo_system_code, 'n/a')           geo_system_code,
-    nvl(gs.geo_system_desc, 'n/a')           geo_system_desc,
-    nvl(a.parentall, - 1)                    t_geo_parts_id,
-    nvl(gp.part_id, - 1)                     part_id,
-    nvl(gp.part_code, 'n/a')                 part_code,
-    nvl(gp.part_desc, 'n/a')                 part_desc,
+    nvl(x.root, - 1)                         t_geo_sys_id,
+    Count(x.parentall) over(Partition by x.root) xxxxxxx1,
+    nvl(gs1.geo_system_id, - 1)               geo_system_id,
+    nvl(gs1.geo_system_code, 'n/a')           geo_system_code,
+    nvl(gs1.geo_system_desc, 'n/a')           geo_system_desc,
+    nvl(x.parentall, - 1)                    t_geo_parts_id,
+    Count(x.parent_geo_id) over(Partition by x.parentall) xxxxxxx2,
+    nvl(gp1.part_id, - 1)                     part_id,
+    nvl(gp1.part_code, 'n/a')                 part_code,
+    nvl(gp1.part_desc, 'n/a')                 part_desc,
   --  nvl(gp.localization_id, 0)               localization_id,
-    nvl(a.parent_geo_id, - 1)                t_geo_regions_id,
-    nvl(gr.region_id, - 1)                   region_id,
-    nvl(gr.region_code, 'N/a')               region_code,
-    nvl(gr.region_desc, 'N/a')               region_desc,
+    nvl(x.parent_geo_id, - 1)                t_geo_regions_id,
+    nvl(gr1.region_id, - 1)                   region_id,
+    nvl(gr1.region_code, 'N/a')               region_code,
+    nvl(gr1.region_desc, 'N/a')               region_desc,
    -- nvl(gr.localization_id, 0)               localization_id,
-    nvl(a.child_geo_id, - 1)                 a_t_country,
-    nvl(cnt.country_id, - 1)                 country_id,
-    nvl(cnt.country_desc, 'n/a')             country_desc,
-    nvl(cnt.country_code_a2, 'n/a')          country_code_a2,
-    nvl(cnt.country_code_a3, 'n/a')          country_code_a3,
+    nvl(x.child_geo_id, - 1)                 a_t_country,
+    nvl(cnt1.country_id, - 1)                 country_id,
+    nvl(cnt1.country_desc, 'n/a')             country_desc,
+    nvl(cnt1.country_code_a2, 'n/a')          country_code_a2,
+    nvl(cnt1.country_code_a3, 'n/a')          country_code_a3,
     ttt.z,
     ttt.x,
     ttt.v,
@@ -43,7 +45,7 @@ SELECT
     ttt.l,
     ttt.u,
     ttt.i,
-    ttt.h     
+    ttt.t    
 FROM (
 SELECT DISTINCT * FROM cte_geo 
     
@@ -55,4 +57,5 @@ SELECT DISTINCT * FROM cte_geo
         JOIN u_dw_references.lc_geo_parts gp1 ON x.parentall = gp1.geo_id
         JOIN u_dw_references.lc_geo_regions gr1 ON x.parent_geo_id = gr1.geo_id
         JOIN u_dw_references.lc_countries cnt1 ON x.child_geo_id = cnt1.geo_id 
-        cross join(select -1 z, -1 x, 'n/a' v, 'n/a' c, -1 w, -1 g, 'n/a' h, 'n/a' k,-1 l, -1 u,'n/a' i, 'n/a' h from dual ) ttt
+        cross join(select -1 z, -1 x, 'n/a' v, 'n/a' c, -1 w, -1 g, 'n/a' h, 'n/a' k,-1 l, -1 u,'n/a' i, 'n/a' t from dual ) ttt
+        
