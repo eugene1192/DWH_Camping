@@ -1,101 +1,3 @@
---insert all data from .csv
---create sa_last_name like buffer table  
-DROP TABLE sa_last_name;
-
-CREATE TABLE sa_last_name (
-    last_name VARCHAR(20)
-);
---SELECT * from sa_last_name;
---insert all data from .csv
---drop table sa_person;
---create sa_last_name like buffer table 
-CREATE TABLE sa_person (
-    first_name  VARCHAR(20),
-    birth_date  VARCHAR(20),
-    gender      VARCHAR(20),
-    zip         VARCHAR(20),
-    ccnumber    NUMBER(20, 0),
-    email       VARCHAR(100),
-    status      VARCHAR(1),
-    rating      NUMBER(10, 0)
-)--drop table sa_person_v2;
---insert all data from .csv
-CREATE TABLE sa_person_v2 (
-    first_name  VARCHAR(20),
-    birth_date  VARCHAR(20),
-    gender      VARCHAR(20),
-    zip         VARCHAR(20),
-    ccnumber    NUMBER(20, 0),
-    email       VARCHAR(100),
-    status      VARCHAR(1),
-    rating      NUMBER(10, 0)
-)    
---drop table sa_vehicle;
---insert all data from .csv
- CREATE TABLE sa_vehicle (
-    year_1        NUMBER(10, 0),
-    year_2        NUMBER(10, 0),
-    manufacturer  VARCHAR(20),
-    model_vhl     VARCHAR(20),
-    milliage      NUMBER(20, 0)
-)
-
-CREATE TABLE u_dw_ext_app.sa_vehicle (
-    manuf_year     NUMBER(10, 0),
-    manufacturer   VARCHAR(20),
-    model_vhl      VARCHAR(20),
-    milliage       NUMBER(20, 0),
-    licence_plate  VARCHAR(50)
-);
-    
-    
-    
---CREATE TABLE SA_CUSTOMERS IN 314000 ROWS
---drop table u_dw_ext_app.sa_customer;
-CREATE TABLE u_dw_ext_app.sa_customer
-    AS
-        SELECT DISTINCT
-            first_name,
-            last_name,
-            to_date(birth_date, 'MM-DD-YYYY') birth_date,
-            rating 
-   --into u_dw_ext_app.sa_customer
-                        FROM
-            sa_person_v2,
-            sa_last_name;
-
-CREATE INDEX sa_customer_idx ON
-    u_dw_ext_app.sa_customer (
-        first_name,
-        last_name,
-        birth_date
-    )
-        TABLESPACE ts_sa_app_data;
-
---CREATE TABLE SA_DRIVER IN 314000 ROWS
---DROP TABLE u_dw_ext_app.sa_driver;
-    CREATE TABLE u_dw_ext_app.sa_driver
-    AS
-        SELECT DISTINCT
-            first_name,
-            last_name,
-            to_date(birth_date, 'MM-DD-YYYY')      birth_date,
-            zip                                    drive_licen,
-            status 
-    --    into u_dw_ext_app.sa_driver
-                         FROM
-            sa_person_v2,
-            sa_last_name;
-    --DROP TABLE  sa_trip CASCADE CONSTRAINTS;
-CREATE INDEX sa_driver_idx ON
-    u_dw_ext_app.sa_driver (
-        first_name,
-        last_name,
-        birth_date,
-        drive_licen
-    )
-        TABLESPACE ts_sa_app_data;
--- insert all data from .csv
 --DROP PROCEDURE load_all_sa;
 -- generic some data in u_dw_ext_app.sa_vehicle
 CREATE OR REPLACE PROCEDURE load_all_sa IS
@@ -128,51 +30,17 @@ BEGIN
                             || trunc(dbms_random.value(0, 9)) vin_code
                         FROM
                             dual
-                    )           r
+                    )  r
             );
 
 END;
 
 EXEC load_all_sa;
 
-SELECT * FROM  u_dw_ext_app.sa_vehicle
-ORDER BY  manufacturer;
-/*==============================================================*/
-/* Table: SA_TRIP                                               */
-/*==============================================================*/
-DROP TABLE u_dw_ext_app.sa_trip CASCADE CONSTRAINTS;
 
-/*==============================================================*/
-/* Table: SA_TRIP                                               */
-/*==============================================================*/
-CREATE TABLE u_dw_ext_app.sa_trip (
-    trip_id               INT NOT NULL,
-    date_id               DATE,
-    driver_first_name     VARCHAR(20),
-    driver_last_name      VARCHAR(20),
-    drive_licen           VARCHAR(20),
-    customer_first_name   VARCHAR(20),
-    customer_last_name    VARCHAR(20),
-    customer_bth_date     DATE,
-    vehicle_manufacturer  VARCHAR(20),
-    vehicle_model         VARCHAR(20),
-    vin_code              VARCHAR(20),
-    country               VARCHAR(20),
-    distance              DECIMAL(10, 1),
-    distance_measure      VARCHAR(20),
-    raiting               DECIMAL(3, 1),
-    status                VARCHAR(1),
-    coast                 DECIMAL(10, 2),
-    currency              VARCHAR(20)
-    --CONSTRAINT pk_sa_trip PRIMARY KEY ( trip_id )
-);
- 
 
-CREATE INDEX sa_trip_idx ON
-   u_dw_ext_app.sa_trip  (
-       trip_id
-    )
- TABLESPACE ts_sa_app_data;
+
+
 
 INSERT INTO u_dw_ext_app.sa_trip
     WITH cte_rnd AS (
@@ -217,9 +85,11 @@ INSERT INTO u_dw_ext_app.sa_trip
                 SELECT
                     first_name,
                     last_name,
-                    drive_licen
+                    drive_licen,
+                    status
                 FROM
                     u_dw_ext_app.sa_driver
+      
             ) a
     ), cte_cust AS (
         SELECT /* +MATERIALIZE*/

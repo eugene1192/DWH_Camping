@@ -1,3 +1,46 @@
+--insert all data from .csv
+--create sa_last_name like buffer table  
+DROP TABLE sa_last_name;
+CREATE TABLE sa_last_name (
+    last_name VARCHAR(20)
+);
+--SELECT * from sa_last_name;
+--insert all data from .csv
+--drop table sa_person;
+--create sa_last_name like buffer table 
+CREATE TABLE sa_person (
+    first_name  VARCHAR(20),
+    birth_date  VARCHAR(20),
+    gender      VARCHAR(20),
+    zip         VARCHAR(20),
+    ccnumber    NUMBER(20, 0),
+    email       VARCHAR(100),
+    status      VARCHAR(1),
+    rating      NUMBER(10, 0)
+)--drop table sa_person_v2;
+--insert all data from .csv
+CREATE TABLE sa_person_v2 (
+    first_name  VARCHAR(20),
+    birth_date  VARCHAR(20),
+    gender      VARCHAR(20),
+    zip         VARCHAR(20),
+    ccnumber    NUMBER(20, 0),
+    email       VARCHAR(100),
+    status      VARCHAR(1),
+    rating      NUMBER(10, 0)
+)    
+--drop table sa_vehicle;
+--insert all data from .csv
+ CREATE TABLE sa_vehicle (
+    year_1        NUMBER(10, 0),
+    year_2        NUMBER(10, 0),
+    manufacturer  VARCHAR(20),
+    model_vhl     VARCHAR(20),
+    milliage      NUMBER(20, 0)
+)
+-- create text level tables----------------------------
+
+
 --drop  TABLESPACE TS_REFERENCES_EXT_DATA_01
 --INCLUDING  CONTENTS;
 --Storage Level
@@ -13,7 +56,95 @@ SIZE 1000M
 GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_ext_app;
 
 
---select * from v$tablespace;
+CREATE TABLE u_dw_ext_app.sa_vehicle (
+    manuf_year     NUMBER(10, 0),
+    manufacturer   VARCHAR(20),
+    model_vhl      VARCHAR(20),
+    milliage       NUMBER(20, 0),
+    licence_plate  VARCHAR(50)
+);
+    
+--CREATE TABLE SA_CUSTOMERS IN 314000 ROWS
+--drop table u_dw_ext_app.sa_customer;
+CREATE TABLE u_dw_ext_app.sa_customer
+    AS
+        SELECT DISTINCT
+            first_name,
+            last_name,
+            to_date(birth_date, 'MM-DD-YYYY') birth_date,
+            rating 
+   --into u_dw_ext_app.sa_customer
+                        FROM
+            sa_person_v2,
+            sa_last_name;
+
+CREATE INDEX sa_customer_idx ON
+    u_dw_ext_app.sa_customer (
+        first_name,
+        last_name,
+        birth_date
+    )
+        TABLESPACE ts_sa_app_data;
+
+--CREATE TABLE SA_DRIVER IN 314000 ROWS
+--DROP TABLE u_dw_ext_app.sa_driver;
+CREATE TABLE u_dw_ext_app.sa_driver
+AS
+    SELECT DISTINCT
+        first_name,
+        last_name,
+        to_date(birth_date, 'MM-DD-YYYY')      birth_date,
+        zip                                    drive_licen,
+        status 
+--    into u_dw_ext_app.sa_driver
+                             FROM
+        sa_person_v2,
+        sa_last_name;
+        
+--DROP TABLE  sa_trip CASCADE CONSTRAINTS;
+CREATE INDEX sa_driver_idx ON
+    u_dw_ext_app.sa_driver (
+        first_name,
+        last_name,
+        birth_date,
+        drive_licen
+    )
+        TABLESPACE ts_sa_app_data;
+        
+DROP TABLE u_dw_ext_app.sa_trip CASCADE CONSTRAINTS;
+
+/*==============================================================*/
+/* Table: SA_TRIP                                               */
+/*==============================================================*/
+CREATE TABLE u_dw_ext_app.sa_trip (
+    trip_id               INT NOT NULL,
+    date_id               DATE,
+    driver_first_name     VARCHAR(20),
+    driver_last_name      VARCHAR(20),
+    drive_licen           VARCHAR(20),
+    customer_first_name   VARCHAR(20),
+    customer_last_name    VARCHAR(20),
+    customer_bth_date     DATE,
+    vehicle_manufacturer  VARCHAR(20),
+    vehicle_model         VARCHAR(20),
+    vin_code              VARCHAR(20),
+    country               VARCHAR(20),
+    distance              DECIMAL(10, 1),
+    distance_measure      VARCHAR(20),
+    raiting               DECIMAL(3, 1),
+    status                VARCHAR(1),
+    coast                 DECIMAL(10, 2),
+    currency              VARCHAR(20)
+    --CONSTRAINT pk_sa_trip PRIMARY KEY ( trip_id )
+);
+ 
+ 
+CREATE INDEX sa_trip_idx ON
+   u_dw_ext_app.sa_trip  (
+       trip_id
+    )
+ TABLESPACE ts_sa_app_data;
+--*****************************************************************************
 --------------------------------------------------------------------------------
 --Level loading
 select * from v$DATABASE;
@@ -29,7 +160,6 @@ SIZE 1000M
   IDENTIFIED BY "1"
    DEFAULT TABLESPACE ts_dw_data QUOTA unlimited  ON ts_dw_data;
 GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_data;
-
 
 --------------------------------------------------------------------------------
 
@@ -73,18 +203,24 @@ grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_dim_tax
 /*==============================================================*/
 /* Table: "dim_location"                                        */
 /*==============================================================*/
+--DROP TABLE u_dw_dim_tax.dim_geo_obj_scd;
+CONNECT pdbadm_evrublevskiy / adm08#evrublevskiy
+
 CREATE TABLE u_dw_dim_tax.dim_geo_obj_scd (
-	location_id				NUMBER,
-	loc_key					NVARCHAR2(10),
+    dim_geo_id              VARCHAR2(40),
+    geo_code                NVARCHAR2(10),
     obj_geo_sys_id          NUMBER,
+    cnt_child_geo_sys       NUMBER,
     geo_system_id           NUMBER,
     geo_system_code         NVARCHAR2(30),
     geo_system_desc         NVARCHAR2(100),
     obj_geo_parts_id        NUMBER,
+    cnt_child_geo_parts     NUMBER,
     part_id                 NUMBER,
     part_code               NVARCHAR2(20),
     part_desc               NVARCHAR2(100),
     obj_geo_regions_id      NUMBER,
+    cnt_child_geo_regions   NUMBER,
     region_id               NUMBER,
     region_code             NVARCHAR2(30),
     region_desc             NVARCHAR2(100),
@@ -106,27 +242,25 @@ CREATE TABLE u_dw_dim_tax.dim_geo_obj_scd (
     sub_group_code          NVARCHAR2(20),
     sub_group_desc          NVARCHAR2(100)
 );
-
 --drop table "u_dw_dim_tax"."dim_trip" cascade constraints;
 
 /*==============================================================*/
 /* Table: "dim_trip"                                            */
 /*==============================================================*/
-create table u_dw_dim_tax.dim_trip
+CREATE TABLE u_dw_dim_tax.dim_trip
 (
-   trip_id              int  not null,
-   sa_trip_id			int
-   tr_distance          DECIMAL(10,3),
-   tr_time              TIMESTAMP,
-   tr_rating_num        INT,
-   status_trip          VARCHAR(2),
-   coast                DECIMAL(10, 3),
-   pay_metod            VARCHAR(50),
-   currency             VARCHAR(50),
-   incert_dt			TIMESTAMP,
-   update_dt            TIMESTAMP
-   constraint PK_DIM_TRIP primary key ("id")
-);
+    trip_id     INT NOT NULL,
+    sa_trip_id  INT,
+    tr_distance DECIMAL(10, 3),
+    tr_time TIMESTAMP,
+    tr_rating_num INT,
+    status_trip VARCHAR(2),
+    coast DECIMAL(10, 3),
+    pay_metod VARCHAR(50),
+    currency VARCHAR(50),
+    incert_dt TIMESTAMP,
+    update_dt TIMESTAMP 
+    CONSTRAINT pk_dim_trip PRIMARY KEY(trip_id) );
 
 
 --drop table "u_dw_dim_tax"."dim_driver" cascade constraints;

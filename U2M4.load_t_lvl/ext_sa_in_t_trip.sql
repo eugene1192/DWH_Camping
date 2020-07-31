@@ -10,17 +10,42 @@ CREATE TABLE u_dw_data.t_trip (
     distance          DECIMAL(10, 1),
     distance_measure  VARCHAR(20),
     raiting           DECIMAL(3, 1),
-    status            VARCHAR(1),
+ --   status            VARCHAR(1),
     coast             DECIMAL(10, 2),
-    currency          VARCHAR(20)
+    currency          VARCHAR(20),
+    insert_dt    TIMESTAMP default sysdate ,
+    update_dt    TIMESTAMP
     --CONSTRAINT pk_sa_trip PRIMARY KEY ( trip_id )
 );
+-- BEFORE INSERT TRIGGER NOT USED
+/*
+drop TRIGGER u_dw_data.insrt_trip_trig;
+create trigger u_dw_data.insrt_trip_trig
+    before insert 
+    on  u_dw_data.t_trip 
+    for each row
+    begin 
+        :new.insert_dt:=sysdate;
+        end;
+ */
+ 
+drop TRIGGER u_dw_data.update_trip_trig;        
+create trigger u_dw_data.update_trip_trig
+    before update 
+    on  u_dw_data.t_trip 
+    for each row
+    begin 
+        :new.update_dt:=sysdate;
+        end;
+
+
 
 CREATE OR REPLACE PROCEDURE ext_sa_t_trip IS
 BEGIN
 
      delete from u_dw_data.t_trip trp 
-        where  trp.sa_trip_id in (select trip_id  from u_dw_ext_app.sa_trip ); 
+        where  trp.sa_trip_id in (select trip_id  from u_dw_ext_app.sa_trip );
+      --   EXECUTE IMMEDIATE 'ALTER TABLE u_dw_data.T_DRIVER MODIFY(driver_id Generated as Identity (START WITH 1))';            
   
         INSERT INTO u_dw_data.t_trip (
             sa_trip_id        ,
@@ -32,7 +57,7 @@ BEGIN
             distance          ,
             distance_measure  ,
             raiting           ,
-            status            ,
+          --  status            ,
             coast             ,
             currency          
         ) 
@@ -46,7 +71,7 @@ BEGIN
             sat.distance,
             sat.distance_measure,
             sat.raiting,
-            sat.status,
+          --  sat.status,
             sat.coast,
             sat.currency
         FROM
@@ -67,119 +92,28 @@ BEGIN
     COMMIT;
 END ext_sa_t_trip;
 
-exec ext_sa_in_t_trip;
+exec ext_sa_t_trip;
 
-select count( *) from u_dw_data.t_trip;
-/* create or replace PROCEDURE ext_sa_in_t_trip
-   AS
-   BEGIN
-      MERGE INTO u_dw_data.t_trip trp
-           USING 
-           (
-            select 
-                trip_id               
-               , date_id             
-               , driver_first_name     
-               , driver_last_name      
-               , drive_licen           
-               , customer_first_name   
-               , customer_last_name
-               , customer_bth_date
-               , vehicle_manufacturer  
-               , vehicle_model         
-               , vin_code              
-               , country               
-               , distance              
-               , distance_measure      
-               , raiting               
-               , status                
-               , coast                 
-               , currency              
-            from  u_dw_ext_app.sa_trip
-           ) sat
-              ON ( trp.sa_trip_id=sat.trip_id )
-      WHEN NOT MATCHED THEN
-         INSERT (                    
-                    sa_trip_id      
-                   , date_id         
-                   , driver_id        
-                   , customer_id    
-                   , vehicle_id      
-                   , country_id       
-                   , distance        
-                   , distance_measure  
-                   , raiting          
-                   , status           
-                   , coast            
-                   , currency          
-                )
-             VALUES ( 
-                     sat.trip_id           
-                   , sat.date_id             
-                   , (select  distinct driver_id
-                            from 
-                                 u_dw_data.t_driver td 
-                               -- , sat
-                           where 
-                                td.driver_first_name= sat.driver_first_name 
-                                AND td.driver_last_name=sat.driver_last_name 
-                                and td.drive_licen =sat.DRIVE_LICEN)
-                   ,(select distinct customer_id
-                            from 
-                               u_dw_data.t_customer ct
-                             --   , sat
-                            where 
-                                ct.FIRST_NAME = sat.customer_first_name 
-                                AND ct.LAST_NAME=sat.customer_last_name 
-                                and ct.birth_date= sat.customer_bth_date
-                                )         
-                   , (select  distinct vehicle_id
-                            from 
-                               u_dw_data.t_vehicle vt
-                            --    , sat
-                            where 
-                                vt.LICENCE_PLATE = sat.vin_code
-                                )  
-                   , (select distinct country_id 
-                            from  
-                                u_dw_references.lc_countries lccnt 
-                            --    , sat 
-                            where sat.country=lccnt.country_desc  )
-                   , sat.distance             
-                   , sat.distance_measure     
-                   , sat.raiting              
-                   , sat.status               
-                   , sat.coast                
-                   , sat.currency    
-                    );
---      WHEN MATCHED THEN
---         UPDATE SET trg.geo_system_desc = cls.geo_system_desc
---                  , trg.geo_system_code = cls.geo_system_code;
 
-      --Commit Resulst
-      COMMIT;
-   END ext_sa_in_t_trip;
-
-select driver_id from 
-    u_dw_data.t_driver td 
-    ,u_dw_ext_app.sa_trip fr
-where 
-    td.driver_first_name= fr.driver_first_name 
-    AND td.driver_last_name=fr.driver_last_name 
-    and td.drive_licen =fr.DRIVE_LICEN;
-
-  select customer_id
-        from 
-           u_dw_data.t_customer ct
-            ,  U_DW_EXT_APP.sa_trip sat
-        where 
-            ct.FIRST_NAME = sat.customer_first_name 
-            AND ct.LAST_NAME=sat.customer_last_name ;
-        
-select vehicle_id
-        from 
-           u_dw_data.t_vehicle vt
-            , U_DW_EXT_APP.sa_trip sat
-        where 
-            vt.LICENCE_PLATE = sat.vin_code
-            */
+--test consistency 
+SELECT
+    *
+FROM
+         u_dw_data.t_trip t
+    JOIN (
+        SELECT
+            d.driver_id,
+            d.driver_first_name,
+            d.driver_last_name,
+            d.drive_licen,
+            dl.driver_status_id,
+            dl.srart_dt,
+            dl.end_date,
+            ds.status,
+            ds.status_desc
+        FROM
+                 u_dw_data.t_driver d
+            JOIN u_dw_data.t_driver_link      dl ON dl.driver_id = d.driver_id
+            JOIN u_dw_data.t_driver_status    ds ON ds.driver_status_id = dl.driver_status_id
+    ) dr ON t.driver_id = dr.driver_id
+            AND t.date_id = dr.srart_dt;
