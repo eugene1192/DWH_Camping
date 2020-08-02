@@ -1,13 +1,6 @@
-/* not used
-CREATE SEQUENCE u_dw_data.t_driver_seq
-  MINVALUE 1
-  START WITH 1
-  INCREMENT BY 1
-  CACHE 20;
-*/
+
 -- create  t_driver  natural key desc *****************************************
 DROP TABLE u_dw_data.t_driver;
-
 CREATE TABLE u_dw_data.t_driver (
         --driver_id number DEFAULT U_DW_EXT_APP.t_driver_seq.nextval,
     driver_id          NUMBER
@@ -63,8 +56,8 @@ DROP TABLE u_dw_data.t_driver_link;
 CREATE TABLE u_dw_data.t_driver_link (
     driver_id         NUMBER,
     driver_status_id  NUMBER,
-    srart_dt          DATE,
-    end_date          DATE
+    srart_dt          DATE
+   -- end_date          DATE
 );
 
 CREATE OR REPLACE PROCEDURE ext_sa_t_driver IS
@@ -99,25 +92,7 @@ BEGIN
     END LOOP;
 
     COMMIT;
-    INSERT INTO u_dw_data.t_driver_status 
-    (
-        status,
-        status_desc
-    )
-        SELECT DISTINCT
-            status,
-            CASE
-                WHEN upper(status) = 'Y'     THEN
-                    'Driver online. Ready to get order'
-                WHEN upper(status) = 'N'     THEN
-                    'Driver not working. Orders are not valid'
-                ELSE
-                    'Unknown status'
-            END
-        FROM
-            u_dw_ext_app.sa_driver;
-
-END ext_sa_t_driver;
+  END ext_sa_t_driver;
 
 CREATE OR REPLACE PROCEDURE load_link_driv_hist IS
 BEGIN
@@ -125,12 +100,12 @@ BEGIN
         SELECT
             td.driver_id,
             dst.driver_status_id,
-            sat.date_id    start_date,
-            LEAD(sat.date_id)
-            OVER(
-                ORDER BY
-                    td.driver_id
-            )              end_date
+            sat.date_id    start_date
+      --     LEAD(sat.date_id)
+      --      OVER(
+      --          ORDER BY
+      --              td.driver_id
+      --       )              end_date
         FROM
                  u_dw_ext_app.sa_trip sat
             JOIN u_dw_data.t_driver  td 
@@ -145,14 +120,66 @@ BEGIN
 
 END load_link_driv_hist;
 
+CREATE OR REPLACE PROCEDURE load_driv_stat IS
+
+    l_rc_var1         SYS_REFCURSOR;
+    l_n_cursor_id     NUMBER;
+    l_n_rowcount      NUMBER;
+    l_n_column_count  NUMBER;
+    l_vc_status       VARCHAR2(3);
+    l_vc_status_desc  VARCHAR2(50);
+    l_ntt_desc_tab    dbms_sql.desc_tab;
+BEGIN
+    EXECUTE IMMEDIATE 'truncate table u_dw_data.t_driver_status';
+    EXECUTE IMMEDIATE 'ALTER TABLE u_dw_data.t_driver_status 
+        MODIFY(driver_status_id Generated as Identity (START WITH 1))';
+    OPEN l_rc_var1 FOR ' SELECT DISTINCT status FROM u_dw_ext_app.sa_driver';
+
+    l_n_cursor_id := dbms_sql.to_cursor_number(l_rc_var1);
+    dbms_sql.describe_columns(l_n_cursor_id, l_n_column_count, l_ntt_desc_tab);
+    FOR loop_col IN 1..l_n_column_count LOOP
+        dbms_sql.define_column(l_n_cursor_id, loop_col,
+              CASE l_ntt_desc_tab(loop_col).col_name
+                  WHEN 'STATUS' THEN
+                      l_vc_status
+              END,
+              5);
+    END LOOP loop_col;
+    LOOP
+        l_n_rowcount := dbms_sql.fetch_rows(l_n_cursor_id);
+        EXIT WHEN l_n_rowcount = 0;
+        FOR loop_col IN 1..l_n_column_count LOOP
+            CASE l_ntt_desc_tab(loop_col).col_name
+                WHEN 'STATUS' THEN
+                    dbms_sql.column_value(l_n_cursor_id, loop_col, l_vc_status);
+            END CASE;
+        END LOOP loop_col;
+
+        INSERT INTO u_dw_data.t_driver_status (
+            status,
+            status_desc
+        ) VALUES (
+            l_vc_status,
+            CASE
+                WHEN upper(l_vc_status) = 'Y'     THEN
+                    'Driver online. Ready to get order'
+                WHEN upper(l_vc_status) = 'N'     THEN
+                    'Driver not working. Orders are not valid'
+                ELSE
+                    'Unknown status'
+             END
+    );
+    END LOOP;
+END load_driv_stat;
+
 EXEC ext_sa_t_driver;
 
 EXEC load_link_driv_hist;
 
+EXEC load_driv_stat;
+
 SELECT * FROM u_dw_data.t_driver;
-
 SELECT * FROM u_dw_data.t_driver_link;
-
 SELECT * FROM u_dw_data.t_driver_status;
 
 SELECT * FROM

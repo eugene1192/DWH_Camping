@@ -101,13 +101,13 @@ SELECT * FROM
          u_dw_data.t_trip t
     JOIN (
         SELECT
-            d.driver_id,
+            d.driver_id,  
             d.driver_first_name,
             d.driver_last_name,
             d.drive_licen,
             dl.driver_status_id,
             dl.srart_dt,
-            dl.end_date,
+        --    dl.end_date,
             ds.status,
             ds.status_desc
         FROM

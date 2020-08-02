@@ -8,7 +8,7 @@ CREATE TABLE u_dw_data.t_vehicle (
     manuf_year     NUMBER(10, 0),
     manufacturer   VARCHAR2(20 BYTE),
     model_vhl      VARCHAR2(20 BYTE),
-    milliage       NUMBER(20, 0),
+    milliage       NUMBER(20, 1),
     licence_plate  VARCHAR2(50 BYTE),
     insert_dt      TIMESTAMP,
     update_dt      TIMESTAMP
