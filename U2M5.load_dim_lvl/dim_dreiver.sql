@@ -104,7 +104,7 @@ END load_dim_drv;
 
 --exec load_dim_drv;
 SELECT
-    COUNT(*)
+    *
 FROM
     u_dw_dim_tax.dim_driver_scd2;
 

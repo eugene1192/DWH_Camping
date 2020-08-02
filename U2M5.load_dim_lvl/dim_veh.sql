@@ -58,9 +58,9 @@ END t_dim_vehicle;
 
 --EXEC t_dim_vehicle;
 /*
-SELECT count(*) FROM  u_dw_dim_tax.dim_vehicle_scd
+SELECT * FROM  u_dw_dim_tax.dim_vehicle_scd
 order by vehicle_id;
-
+ delete from  u_dw_dim_tax.dim_vehicle_scd;
 DROP TABLE u_dw_dim_tax.dim_vehicle_scd;
 
 CREATE TABLE u_dw_dim_tax.dim_vehicle_scd (

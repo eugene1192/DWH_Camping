@@ -186,7 +186,7 @@ create table test_model
     distance NUMBER(9,1),
     finished number ,
     canceled number,
-    total_order number,
+ --   total_order number,
     cancel_percent NUMBER(8,2),
     finish_percent NUMBER(8,2)
     

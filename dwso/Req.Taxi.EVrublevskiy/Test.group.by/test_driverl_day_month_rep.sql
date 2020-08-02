@@ -1,7 +1,8 @@
 WITH like_fct_daily AS(
     SELECT 
-       -- trunc(a.date_id, 'MONTH') date_id     -- group by month
-        trunc(a.date_id, 'DAY') date_id     -- group by day
+        trunc(a.date_id, 'MONTH') date_id     -- group by month
+        
+       -- trunc(a.date_id, 'DAY') date_id     -- group by day
         ,a.trip_id
         ,a.driver_first_name 
         || ' ' ||
