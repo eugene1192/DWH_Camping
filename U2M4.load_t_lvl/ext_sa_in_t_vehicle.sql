@@ -1,43 +1,4 @@
 SET SERVEROUTPUT ON;
-
-DROP TABLE u_dw_data.t_vehicle;
-
-CREATE TABLE u_dw_data.t_vehicle (
-    vehicle_id     NUMBER
-        GENERATED ALWAYS AS IDENTITY,
-    manuf_year     NUMBER(10, 0),
-    manufacturer   VARCHAR2(20 BYTE),
-    model_vhl      VARCHAR2(20 BYTE),
-    milliage       NUMBER(20, 1),
-    licence_plate  VARCHAR2(50 BYTE),
-    insert_dt      TIMESTAMP,
-    update_dt      TIMESTAMP
-);
-
-DROP TRIGGER u_dw_data.insrt_vehic_trig;
-
-CREATE TRIGGER u_dw_data.insrt_vehic_trig BEFORE
-    INSERT ON u_dw_data.t_vehicle
-    FOR EACH ROW
-BEGIN
-    :new.insert_dt := sysdate;
-END;
-
-DROP TRIGGER u_dw_data.update_vehic_trig;
-
-CREATE TRIGGER u_dw_data.update_vehic_trig BEFORE
-    UPDATE ON u_dw_data.t_vehicle
-    FOR EACH ROW
-BEGIN
-    :new.update_dt := sysdate;
-END;
-
-CREATE INDEX u_dw_data.t_vehicle_idx ON
-    u_dw_data.t_vehicle (
-        vehicle_id
-    )
-        TABLESPACE ts_dw_data;
-
 CREATE OR REPLACE PROCEDURE ext_sa_t_vehicke IS
 
     TYPE t_sa_vehicle IS
@@ -76,3 +37,4 @@ END ext_sa_t_vehicke;
 EXEC ext_sa_t_vehicke;
 
 SELECT * FROM u_dw_data.t_vehicle;
+select * from U_DW_DIM_TAX.dim_vehicle_scd;

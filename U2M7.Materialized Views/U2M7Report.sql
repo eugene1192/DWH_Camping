@@ -1,4 +1,5 @@
 /* 
+-- create  view_test_on_dem for DBMS_MVIEW.refresh test
 CREATE MATERIALIZED VIEW view_test_on_dem
 REFRESH COMPLETE 
 NEXT sysdate+NUMTODSINTERVAL(1 , 'MINUTE' )
@@ -71,7 +72,7 @@ SELECT
   ;
 */
 
- SELECT
+SELECT
     *
 FROM
     u_dw_ext_app.sa_trip;

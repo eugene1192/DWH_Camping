@@ -1,4 +1,4 @@
-
+SET SERVEROUTPUT ON;
 CREATE OR REPLACE PROCEDURE t_dim_vehicle IS
 
     cur_id         NUMBER;
@@ -7,31 +7,33 @@ CREATE OR REPLACE PROCEDURE t_dim_vehicle IS
     TYPE t_vehicle IS
         TABLE OF u_dw_data.t_vehicle%rowtype;
     var_t_vehcl    t_vehicle := t_vehicle();
+    var_t_vehcl_2   t_vehicle := t_vehicle();  
     var_cur_t_veh  VARCHAR(60) := '(SELECT vehicle_id FROM u_dw_dim_tax.dim_vehicle_scd )';
 BEGIN
     cur_id := dbms_sql.open_cursor;
     dbms_sql.parse(cur_id,
                   'SELECT DISTINCT * FROM u_dw_data.t_vehicle where vehicle_id  in  ' || var_cur_t_veh
--- SELECT DISTINCT * FROM u_dw_data.t_vehicle where vehicle_id not in (SELECT vehicle_id FROM u_dw_data.t_vehicle_2);
+-- SELECT DISTINCT vehicle_id FROM u_dw_data.t_vehicle where vehicle_id not in (SELECT vehicle_id FROM u_dw_dim_tax.dim_vehicle_scd);
                   ,
                   dbms_sql.native);
     row_cnt := dbms_sql.execute(cur_id);
     var_cur := dbms_sql.to_refcursor(cur_id);
-    FETCH var_cur BULK COLLECT INTO var_t_vehcl;
-    FORALL i IN var_t_vehcl.first..var_t_vehcl.last
-        UPDATE u_dw_dim_tax.dim_vehicle_scd
+    FETCH var_cur BULK COLLECT INTO var_t_vehcl_2;
+    FORALL i IN var_t_vehcl_2.first..var_t_vehcl_2.last 
+    --    DBMS_OUTPUT.PUT_LINE(var_t_vehcl_2(i).vihicle_id)      
+        UPDATE u_dw_dim_tax.dim_vehicle_scd a
         SET
-            manuf_year = var_t_vehcl(i).manuf_year,
-            manufacturer = var_t_vehcl(i).manufacturer,
-            model_vhl = var_t_vehcl(i).model_vhl,
-            milliage = var_t_vehcl(i).milliage,
-            licence_plate = var_t_vehcl(i).licence_plate;
-
+            manuf_year = var_t_vehcl_2(i).manuf_year,
+            manufacturer = var_t_vehcl_2(i).manufacturer,
+            model_vhl = var_t_vehcl_2(i).model_vhl,
+            milliage = var_t_vehcl_2(i).milliage,
+            licence_plate = var_t_vehcl_2(i).licence_plate
+            where a.vehicle_id=var_t_vehcl_2(i).vehicle_id; 
     COMMIT;
     cur_id := dbms_sql.open_cursor;
     dbms_sql.parse(cur_id,
                   'SELECT DISTINCT * FROM u_dw_data.t_vehicle where vehicle_id not in  ' || var_cur_t_veh
-   -- SELECT DISTINCT * FROM u_dw_data.t_vehicle where vehicle_id not in (SELECT vehicle_id FROM u_dw_data.t_vehicle_2);
+   -- SELECT DISTINCT * FROM u_dw_data.t_vehicle where vehicle_id not in (SELECT vehicle_id FROM u_dw_dim_tax.dim_vehicle_scd);
                   ,
                   dbms_sql.native);
  --  dbms_sql.bind_variable(cur_id, 'var_vehicle_id', var_cur_t_veh);
@@ -40,18 +42,21 @@ BEGIN
     FETCH var_cur BULK COLLECT INTO var_t_vehcl;
     FORALL i IN var_t_vehcl.first..var_t_vehcl.last
         INSERT INTO u_dw_dim_tax.dim_vehicle_scd (
+            vehicle_id,
             manuf_year,
             manufacturer,
             model_vhl,
             milliage,
             licence_plate
         ) VALUES (
+            var_t_vehcl(i).vehicle_id,
             var_t_vehcl(i).manuf_year,
             var_t_vehcl(i).manufacturer,
             var_t_vehcl(i).model_vhl,
             var_t_vehcl(i).milliage,
             var_t_vehcl(i).licence_plate
         );
+       
 
     COMMIT;
 END t_dim_vehicle;

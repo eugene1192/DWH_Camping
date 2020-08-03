@@ -82,7 +82,8 @@ BEGIN
             ,
             end_dt
         FROM
-            dim;
+            dim
+            ;
 
     COMMIT;
     DELETE FROM u_dw_dim_tax.dim_driver_scd2 a
@@ -102,12 +103,13 @@ BEGIN
     COMMIT;
 END load_dim_drv;
 
---exec load_dim_drv;
+exec load_dim_drv;
+/*
 SELECT
     *
 FROM
     u_dw_dim_tax.dim_driver_scd2;
-
+*/
 /*drop table u_dw_dim_tax.dim_driver_scd2;
 ALTER TABLE u_dw_dim_tax.dim_driver_scd2 
         MODIFY(dim_drv_id Generated as Identity (START WITH 1));

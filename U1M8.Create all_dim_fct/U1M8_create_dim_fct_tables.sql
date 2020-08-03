@@ -116,6 +116,7 @@ DROP TABLE u_dw_ext_app.sa_trip CASCADE CONSTRAINTS;
 /*==============================================================*/
 /* Table: SA_TRIP                                               */
 /*==============================================================*/
+drop table u_dw_ext_app.sa_trip;
 CREATE TABLE u_dw_ext_app.sa_trip (
     trip_id               INT NOT NULL,
     date_id               DATE,
@@ -137,8 +138,7 @@ CREATE TABLE u_dw_ext_app.sa_trip (
     currency              VARCHAR(20)
     --CONSTRAINT pk_sa_trip PRIMARY KEY ( trip_id )
 );
- 
- 
+  
 CREATE INDEX sa_trip_idx ON
    u_dw_ext_app.sa_trip  (
        trip_id
@@ -162,10 +162,198 @@ SIZE 1000M
 GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_data;
 
 --------------------------------------------------------------------------------
+--******************************************************************************
+--Create table u_dw_data.t_vehicle
+--Create trigger u_dw_data.insrt_vehic_trig
+--Create trigger u_dw_data.update_vehic_trig
+--Create index u_dw_data.t_vehicle_idx
+--******************************************************************************
+--DROP TABLE u_dw_data.t_vehicle;
+CREATE TABLE u_dw_data.t_vehicle (
+    vehicle_id     NUMBER
+        GENERATED ALWAYS AS IDENTITY,
+    manuf_year     NUMBER(10, 0),
+    manufacturer   VARCHAR2(20 BYTE),
+    model_vhl      VARCHAR2(20 BYTE),
+    milliage       NUMBER(20, 1),
+    licence_plate  VARCHAR2(50 BYTE),
+    insert_dt      TIMESTAMP,
+    update_dt      TIMESTAMP
+);
 
+--DROP TRIGGER u_dw_data.insrt_vehic_trig;
+CREATE TRIGGER u_dw_data.insrt_vehic_trig BEFORE
+    INSERT ON u_dw_data.t_vehicle
+    FOR EACH ROW
+BEGIN
+    :new.insert_dt := sysdate;
+END;
+
+--DROP TRIGGER u_dw_data.update_vehic_trig;
+
+CREATE TRIGGER u_dw_data.update_vehic_trig BEFORE
+    UPDATE ON u_dw_data.t_vehicle
+    FOR EACH ROW
+BEGIN
+    :new.update_dt := sysdate;
+END;
+
+CREATE INDEX u_dw_data.t_vehicle_idx ON
+    u_dw_data.t_vehicle (
+        vehicle_id
+    )
+        TABLESPACE ts_dw_data;
+--******************************************************************************
+-- Crate table u_dw_data.t_trip
+-- Create trigger u_dw_data.update_trip_trig
+--******************************************************************************
+-- DROP TABLE u_dw_data.t_trip;
+CREATE TABLE u_dw_data.t_trip (
+    trip_id           NUMBER
+        GENERATED ALWAYS AS IDENTITY,
+    sa_trip_id        INT NOT NULL,
+    date_id           DATE,
+    driver_id         NUMBER,
+    customer_id       NUMBER,
+    vehicle_id        NUMBER,
+    country_id        VARCHAR(20),
+    distance          DECIMAL(10, 1),
+    distance_measure  VARCHAR(20),
+    raiting           DECIMAL(3, 1),
+    status            VARCHAR(1),
+    coast             DECIMAL(10, 2),
+    currency          VARCHAR(20),
+    insert_dt         TIMESTAMP DEFAULT sysdate,
+    update_dt         TIMESTAMP
+   
+);
+-- BEFORE INSERT TRIGGER NOT USED
+/*
+drop TRIGGER u_dw_data.insrt_trip_trig;
+create trigger u_dw_data.insrt_trip_trig
+    before insert 
+    on  u_dw_data.t_trip 
+    for each row
+    begin 
+        :new.insert_dt:=sysdate;
+        end;
+ */ 
+--DROP TRIGGER u_dw_data.update_trip_trig;
+
+CREATE TRIGGER u_dw_data.update_trip_trig BEFORE
+    UPDATE ON u_dw_data.t_trip
+    FOR EACH ROW
+BEGIN
+    :new.update_dt := sysdate;
+END;
+--******************************************************************************
+--Create table u_dw_data.t_customer
+--Create trigger u_dw_data.insrt_cust_trig
+--Create trigger u_dw_data.update_cust_trig
+--Create index u_dw_data.t_customer_idx
+--******************************************************************************
+--DROP TABLE u_dw_data.t_customer;
+
+CREATE TABLE u_dw_data.t_customer (
+    customer_id  NUMBER
+        GENERATED ALWAYS AS IDENTITY,
+    first_name   VARCHAR2(20 BYTE),
+    last_name    VARCHAR2(20 BYTE),
+    birth_date   DATE,
+    rating       NUMBER(10, 0),
+    insert_dt    TIMESTAMP,
+    update_dt    TIMESTAMP
+);
+
+--DROP TRIGGER u_dw_data.insrt_cust_trig;
+
+CREATE TRIGGER u_dw_data.insrt_cust_trig BEFORE
+    INSERT ON u_dw_data.t_customer
+    FOR EACH ROW
+BEGIN
+    :new.insert_dt := sysdate;
+END;
+
+DROP TRIGGER u_dw_data.update_cust_trig;
+
+CREATE TRIGGER u_dw_data.update_cust_trig BEFORE
+    UPDATE ON u_dw_data.t_customer
+    FOR EACH ROW
+BEGIN
+    :new.update_dt := sysdate;
+END;
+
+CREATE INDEX t_customer_idx ON
+    u_dw_data.t_customer (
+        customer_id
+    )
+        TABLESPACE ts_dw_data;
+--******************************************************************************
+----Create table u_dw_data.t_driver
+--Create trigger u_dw_data.insrt_driver_trig
+--Create trigger u_dw_data.update_driver_trig
+--Create index u_dw_data.t_driver_idx
+--******************************************************************************
+--DROP TABLE u_dw_data.t_driver;
+CREATE TABLE u_dw_data.t_driver (
+        --driver_id number DEFAULT U_DW_EXT_APP.t_driver_seq.nextval,
+    driver_id          NUMBER
+        GENERATED AS IDENTITY,
+    driver_first_name  VARCHAR(20),
+    driver_last_name   VARCHAR(20),
+    birth_date         DATE,
+    drive_licen        VARCHAR(20),
+    insert_dt          TIMESTAMP,
+    update_dt          TIMESTAMP
+);
+
+--DROP TRIGGER u_dw_data.insrt_driver_trig;
+
+CREATE TRIGGER u_dw_data.insrt_driver_trig BEFORE
+    INSERT ON u_dw_data.t_driver
+    FOR EACH ROW
+BEGIN
+    :new.insert_dt := sysdate;
+END;
+
+--DROP TRIGGER u_dw_data.update_driver_trig;
+
+CREATE TRIGGER u_dw_data.update_driver_trig BEFORE
+    UPDATE ON u_dw_data.t_driver
+    FOR EACH ROW
+BEGIN
+    :new.update_dt := sysdate;
+END;
+
+CREATE INDEX t_driver_idx ON
+    u_dw_data.t_driver (
+        driver_id
+    )
+        TABLESPACE ts_dw_data;
  
+-- create t_driver status  table**********************************************
+DROP TABLE u_dw_data.t_driver_status;
+
+CREATE TABLE u_dw_data.t_driver_status (
+    driver_status_id  NUMBER
+        GENERATED AS IDENTITY,
+    status            VARCHAR(3),
+    status_desc       VARCHAR(50)
+);
+
+
+-- create t_driver_link table  *************************************************
+DROP TABLE u_dw_data.t_driver_link;
+
+CREATE TABLE u_dw_data.t_driver_link (
+    driver_id         NUMBER,
+    driver_status_id  NUMBER,
+    srart_dt          DATE
+   -- end_date          DATE
+);
+--******************************************************************************
 --------------------------------------------------------------------------------
- --STAR � Level
+ 
 
 CREATE TABLESPACE ts_fct_tax_month_01
 DATAFILE '/oracle/u01/app/oracle/oradata/DCORCL/pdb_evrublevskiy/ts_fct_tax_month_01.dat'
@@ -179,6 +367,45 @@ SIZE 500M
   IDENTIFIED BY "1"
     DEFAULT TABLESPACE ts_fct_tax_month_01 QUOTA unlimited ON ts_fct_tax_month_01;
 grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_fct_tax;
+
+
+--drop table u_dw_fct_tax.fct_driv_month; 
+  CREATE TABLE u_dw_fct_tax.fct_driv_month (
+    dim_month_id       NUMBER(*, 0),
+    dim_drv_id         NUMBER,
+    tot_distane        NUMBER,
+    distance_measure   VARCHAR2(20 BYTE),
+    cnt_finish_orders  NUMBER,
+    cnt_cancel_orders  NUMBER,
+    total_orders       NUMBER,
+    avg_raiting        NUMBER,
+    percent_finished   VARCHAR2(42 BYTE),
+    percent_canceled   VARCHAR2(42 BYTE),
+    total_coast        NUMBER,
+    currency           VARCHAR2(20 BYTE),
+    dim_geo_id         VARCHAR2(40 BYTE),
+    insert_dt      TIMESTAMP,
+    update_dt      TIMESTAMP
+)
+
+TABLESPACE ts_fct_tax_month_01;
+
+CREATE TRIGGER u_dw_fct_tax.fct_driv_month_insert_trig BEFORE
+    INSERT ON u_dw_fct_tax.fct_driv_month
+    FOR EACH ROW
+BEGIN
+    :new.insert_dt := sysdate;
+END;
+
+--DROP TRIGGER  u_dw_fct_tax.fct_driv_month_update_trig;
+
+CREATE TRIGGER u_dw_fct_tax.fct_driv_month_update_trig BEFORE
+    UPDATE ON u_dw_fct_tax.fct_driv_month
+    FOR EACH ROW
+BEGIN
+    :new.update_dt := sysdate;
+END;
+
  ------------------------------------------------------------------------------- 
  
  CREATE TABLESPACE ts_dim_tax_01
@@ -196,9 +423,6 @@ GRANT CONNECT,RESOURCE, CREATE VIEW TO u_dw_dim_tax;
 
 grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_dim_tax;
 
-
-
---drop table "u_dw_dim_tax"."dim_location" cascade constraints;
 
 /*==============================================================*/
 /* Table: "dim_location"                                        */
@@ -244,178 +468,107 @@ CREATE TABLE u_dw_dim_tax.dim_geo_obj_scd (
 );
 --drop table "u_dw_dim_tax"."dim_trip" cascade constraints;
 
-/*==============================================================*/
-/* Table: "dim_trip"                                            */
-/*==============================================================*/
-CREATE TABLE u_dw_dim_tax.dim_trip
-(
-    trip_id     INT NOT NULL,
-    sa_trip_id  INT,
-    tr_distance DECIMAL(10, 3),
-    tr_time TIMESTAMP,
-    tr_rating_num INT,
-    status_trip VARCHAR(2),
-    coast DECIMAL(10, 3),
-    pay_metod VARCHAR(50),
-    currency VARCHAR(50),
-    incert_dt TIMESTAMP,
-    update_dt TIMESTAMP 
-    CONSTRAINT pk_dim_trip PRIMARY KEY(trip_id) );
-
-
---drop table "u_dw_dim_tax"."dim_driver" cascade constraints;
 
 /*==============================================================*/
 /* Table: "dim_driver"                                          */
 /*==============================================================*/
-create table u_dw_dim_tax.dim_driver 
-(
-   driver_id                 int      not null,
-   first_name         VARCHAR(120),
-   last_name          VARCHAR(120),
-   dirth_date         DATE,
-   driv_lic_num       VARCHAR(120),
-   age                INT,
-   driv_rating        VARCHAR(50),
-   driv_rating_num    int,
-   incert_dt			TIMESTAMP,
-   update_dt          TIMESTAMP
-   constraint PK_DIM_DRIVER primary key ("id")
+--drop table u_dw_dim_tax.dim_driver_scd2;
+--ALTER TABLE u_dw_dim_tax.dim_driver_scd2 
+--        MODIFY(dim_drv_id Generated as Identity (START WITH 1));
+CREATE TABLE u_dw_dim_tax.dim_driver_scd2 (
+    dim_drv_id          NUMBER GENERATED ALWAYS AS IDENTITY,
+    driver_id          NUMBER,
+    driver_first_name   VARCHAR(20),
+    driver_last_name    VARCHAR(20),
+    birth_date          DATE,
+    drive_licen         VARCHAR(20),
+    driver_status_id    NUMBER,
+    status              VARCHAR(3),
+    status_desc         VARCHAR(50),
+    is_active           NUMBER default 1,
+    valid_from          date,
+    valid_to            date,
+    insert_dt         TIMESTAMP DEFAULT sysdate
 );
 
-
---drop table "u_dw_dim_tax"."dim_date" cascade constraints;
 
 /*==============================================================*/
 /* Table: "dim_date"                                            */
 /*==============================================================*/
-create table u_dw_dim_tax.dim_date
-(
-   DATE_ID              NUMBER               not null,
-   DAY_VCHAR_ID         DATE,
-   DAY_NAME             VARCHAR2(36 BYTE),
-   DAY_NUMBER_IN_WEEK   VARCHAR2(1 BYTE),
-   DAY_NUMBER_IN_MONTH  VARCHAR2(2 BYTE),
-   DAY_NUMBER_IN_YEAR   VARCHAR2(3 BYTE),
-   WEEK_ID              NUMBER,
-   CALENDAR_WEEK_NUMBER VARCHAR2(1 BYTE),
-   WEEK_ENDING_DATE     DATE,
-   MONTH_ID             NUMBER,
-   CALENDAR_MONTH_NUMBER VARCHAR2(2 BYTE),
-   DAYS_IN_CAL_MONTH    VARCHAR2(2 BYTE),
-   END_OF_CAL_MONTH     DATE,
-   CALENDAR_MONTH_NAME  VARCHAR2(36 BYTE),
-   QUARTER_ID           NUMBER,
-   DAYS_IN_CAL_QUARTER  NUMBER,
-   BEG_OF_CAL_QUARTER   DATE,
-   END_OF_CAL_QUARTER   DATE,
-   CALENDAR_QUARTER_NUMBER VARCHAR2(1 BYTE),
-   YEAR_ID              NUMBER,
-   CALENDAR_YEAR        VARCHAR2(4 BYTE),
-   DAYS_IN_CAL_YEAR     NUMBER,
-   BEG_OF_CAL_YEAR      DATE,
-   END_OF_CAL_YEAR      DATE,
-   constraint PK_DIM_DATE primary key (DATE_ID)
-);
-
-
---drop table "u_dw_dim_tax"."dim_vehicle" cascade constraints;
+  CREATE TABLE u_dw_dim_tax.dim_date 
+   (	date_id NUMBER(*,0), 
+	day_vchar_id DATE, 
+	day_name VARCHAR2(36 BYTE), 
+	day_number_in_week VARCHAR2(1 BYTE), 
+	day_number_in_month VARCHAR2(2 BYTE), 
+	day_number_in_year VARCHAR2(3 BYTE), 
+	week_id NUMBER(*,0), 
+	beg_week_date DATE, 
+	end_week_date DATE, 
+	calendar_week_number VARCHAR2(1 BYTE), 
+	month_id NUMBER(*,0), 
+	calendar_month_name VARCHAR2(36 BYTE), 
+	calendar_month_number VARCHAR2(2 BYTE), 
+	days_in_cal_month VARCHAR2(2 BYTE), 
+	beg_of_cal_month DATE, 
+	end_of_cal_month DATE, 
+	quarter_id NUMBER(*,0), 
+	calendar_quarter_number VARCHAR2(1 BYTE), 
+	days_in_cal_quarter NUMBER, 
+	beg_of_cal_quarter DATE, 
+	end_of_cal_quarter DATE, 
+	year_id NUMBER(*,0), 
+	calendar_year VARCHAR2(4 BYTE), 
+	days_in_cal_year NUMBER, 
+	beg_of_cal_year DATE, 
+	end_of_cal_year DATE
+   ) SEGMENT CREATION IMMEDIATE 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  STORAGE(INITIAL 65536 NEXT 1048576 MINEXTENTS 1 MAXEXTENTS 2147483645
+  PCTINCREASE 0 FREELISTS 1 FREELIST GROUPS 1
+  BUFFER_POOL DEFAULT FLASH_CACHE DEFAULT CELL_FLASH_CACHE DEFAULT)
+  TABLESPACE ts_dim_tax_01 ;
 
 /*==============================================================*/
 /* Table: "dim_vehicle"                                         */
 /*==============================================================*/
-create table u_dw_dim_tax.dim_vehicle 
-(
-   vehicle_id         int                  not null,
-   licens_plate       varchar(120),
-   car_model          VARCHAR(120),
-   manuf_year         int,
-   total_miliage      INT,
-   incert_dt		  TIMESTAMP,
-   update_dt          TIMESTAMP
-   constraint PK_DIM_VEHICLE primary key ("id")
+--DROP TABLE u_dw_dim_tax.dim_vehicle_scd;
+
+CREATE TABLE u_dw_dim_tax.dim_vehicle_scd (
+    vehicle_id     NUMBER
+       ,
+    manuf_year     NUMBER(10, 0),
+    manufacturer   VARCHAR2(20 BYTE),
+    model_vhl      VARCHAR2(20 BYTE),
+    milliage       NUMBER(20, 1),
+    licence_plate  VARCHAR2(50 BYTE),
+    insert_dt      TIMESTAMP,
+    update_dt      TIMESTAMP
 );
 
---drop table u_dw_dim_tax.dim_vehicle
-/*
-alter table u_dw_dim_tax.fct_taxi_trip
-   drop constraint FK_FCT_TAXI_REFERENCE_DIM_TRIP;
+--DROP TRIGGER u_dw_dim_tax.insrt_vehic_trig;
 
-alter table "u_dw_dim_tax"."fct_taxi_trip"
-   drop constraint FK_FCT_TAXI_REFERENCE_DIM_CUST;
+CREATE TRIGGER u_dw_dim_tax.insrt_vehic_trig BEFORE
+    INSERT ON u_dw_dim_tax.dim_vehicle_scd
+    FOR EACH ROW
+BEGIN
+    :new.insert_dt := sysdate;
+END;
 
-alter table "u_dw_references"."fct_taxi_trip"
-   drop constraint FK_FCT_TAXI_REFERENCE_DIM_DATE;
+--DROP TRIGGER u_dw_dim_tax.update_vehic_trig;
 
-alter table "u_dw_references"."fct_taxi_trip"
-   drop constraint FK_FCT_TAXI_REFERENCE_DIM_DRIV;
+CREATE TRIGGER u_dw_dim_tax.update_vehic_trig BEFORE
+    UPDATE ON u_dw_dim_tax.dim_vehicle_scd
+    FOR EACH ROW
+BEGIN
+    :new.update_dt := sysdate;
+END;
 
-alter table "u_dw_references"."fct_taxi_trip"
-   drop constraint FK_FCT_TAXI_REFERENCE_DIM_INVO;
-
-alter table "u_dw_references"."fct_taxi_trip"
-   drop constraint FK_FCT_TAXI_REFERENCE_DIM_LOCA;
-
-alter table "u_dw_references"."fct_taxi_trip"
-   drop constraint FK_FCT_TAXI_REFERENCE_DIM_VEHI;
-
-alter table "u_dw_references"."fct_taxi_trip"
-   drop unique () cascade;
-
-drop table u_dw_fct_tax.fct_taxi_trip cascade constraints;
-*/
 /*==============================================================*/
 /* Table: "fct_taxi_trip"         u_dw_fct_tax                              */
 /*=============================== ===============================*/
 
-create table u_dw_fct_tax.fct_taxi_trip
-(
-   id_dim_car         int,
-   id_dim_customer    int,
-   id_dim_date        NUMBER,
-   id_dim_driver     int,
-   id_dim_invoice    INT,
-   id_dim_location    int,
-   id_dim_trip        int,
-   fct_tot_order_ad   VARCHAR(20),
-   fct_tot_mill_ad    NUMBER,
-   fct_tot_cust_ad    NUMBER,
-   fct_percnt_order_cancel_nad VARCHAR(20),
-   fct_percnt_order_finsh_nad VARCHAR(20)
-)
-PARTITION BY HASH (id_dim_car, id_dim_customer,id_dim_date, id_dim_driver, 
-id_dim_invoice, id_dim_location ,id_dim_trip)
-   PARTITIONS 4 ;
+
  
- --drop table u_dw_fct_tax.fct_taxi_trip;
-/*
-alter table u_dw_fct_tax.fct_taxi_trip
-   add constraint FK_FCT_TAXI_REFERENCE_DIM_TRIP foreign key ("id_dim_car")
-      references u_dw_dim_tax.dim_trip ("id") ;
-      
- select * from u_dw_fct_tax.fct_taxi_trip;     
-
-alter table u_dw_fct_tax.fct_taxi_trip
-   add constraint FK_FCT_TAXI_REFERENCE_DIM_CUST foreign key ("id_dim_customer")
-      references u_dw_dim_tax.dim_customer ("id");
-
-alter table u_dw_fct_tax.fct_taxi_trip
-   add constraint FK_FCT_TAXI_REFERENCE_DIM_DATE foreign key ("id_dim_date")
-      references u_dw_dim_tax.dim_date (DATE_ID);
-
-alter table u_dw_fct_tax.fct_taxi_trip
-   add constraint FK_FCT_TAXI_REFERENCE_DIM_DRIV foreign key ("id_dim_driver")
-      references u_dw_dim_tax.dim_driver ("id");
-
-alter table u_dw_fct_tax.fct_taxi_trip
-   add constraint FK_FCT_TAXI_REFERENCE_DIM_INVO foreign key ("id_dim_invoice")
-      references u_dw_dim_tax.dim_invoice ("id");
-
-alter table u_dw_fct_tax.fct_taxi_trip
-   add constraint FK_FCT_TAXI_REFERENCE_DIM_LOCA foreign key ("id_dim_location")
-      references "u_dw_dim_tax"."dim_location" ("id");
-
-alter table u_dw_fct_tax.fct_taxi_trip
-   add constraint FK_FCT_TAXI_REFERENCE_DIM_VEHI foreign key ("id_dim_trip")
-      references u_dw_dim_tax.dim_vehicle ("id");
-*/
+ 

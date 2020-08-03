@@ -1,6 +1,6 @@
 --DROP TABLE u_dw_dim_tax.dim_geo_obj_scd;
 CONNECT pdbadm_evrublevskiy / adm08#evrublevskiy
-
+TRUNCATE TABLE u_dw_dim_tax.dim_geo_obj_scd;
 CREATE TABLE u_dw_dim_tax.dim_geo_obj_scd (
     dim_geo_id              VARCHAR2(40),
     geo_code                NVARCHAR2(10),

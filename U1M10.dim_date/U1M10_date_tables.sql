@@ -1,5 +1,5 @@
 --drop table sa_calendar;
-create table sa_calendar as 
+create table u_dw_ext_app.sa_calendar as 
 SELECT 
 CAST((TO_CHAR(sd+rn , 'MM')||TO_CHAR(sd+rn , 'DD')||TO_CHAR(sd+rn , 'YYYY') ) AS INTEGER) date_id,
   TRUNC( sd + rn ) day_vchar_id,
@@ -56,7 +56,7 @@ FROM
 
 --select * from sa_calendar;
 -- create t_day all day in year
---drop table u_dw_da.tat_day;
+--drop table u_dw_datat_day;
 create table u_dw_data.t_day  as 
     select  c.DATE_ID , 
             c.DAY_VCHAR_ID,
@@ -64,7 +64,7 @@ create table u_dw_data.t_day  as
             c.DAY_NUMBER_IN_WEEK,
             c.DAY_NUMBER_IN_MONTH,
             c.DAY_NUMBER_IN_YEAR
-    from sa_calendar c;
+    from u_dw_ext_app.sa_calendar c;
     
 --create t_week all week in year
 drop table u_dw_data.t_week;
@@ -73,7 +73,7 @@ create table u_dw_data.t_week  as
             c.WEEK_ENDING_DATE-6 BEG_WEEK_DATE,
             c.WEEK_ENDING_DATE END_WEEK_DATE, 
             c.CALENDAR_WEEK_NUMBER            
-    from sa_calendar c 
+    from u_dw_ext_app.sa_calendar c 
     where
         c.date_id=CAST((TO_CHAR(WEEK_ENDING_DATE , 'MM')
         ||TO_CHAR(WEEK_ENDING_DATE , 'DD')
@@ -89,7 +89,7 @@ create table u_dw_data.t_month as
     c.DAYS_IN_CAL_MONTH,
     c.END_OF_CAL_MONTH - c.DAYS_IN_CAL_MONTH+1 as BEG_OF_CAL_MONTH,
     c.END_OF_CAL_MONTH    
-    from sa_calendar c
+    from u_dw_ext_app.sa_calendar c
     where 
         c.date_id=CAST((TO_CHAR(END_OF_CAL_MONTH , 'MM')
         ||TO_CHAR(END_OF_CAL_MONTH , 'DD')
@@ -104,7 +104,7 @@ create table u_dw_data.t_quarter as
         c.DAYS_IN_CAL_QUARTER,
         c.BEG_OF_CAL_QUARTER,
         c.END_OF_CAL_QUARTER
-       from sa_calendar c
+       from u_dw_ext_app.sa_calendar c
     where
         c.date_id=CAST((TO_CHAR(BEG_OF_CAL_QUARTER , 'MM')
         ||TO_CHAR(BEG_OF_CAL_QUARTER , 'DD')
@@ -119,7 +119,7 @@ create table u_dw_data.t_year as
          c.DAYS_IN_CAL_YEAR,
          c.BEG_OF_CAL_YEAR,
          c.END_OF_CAL_YEAR
-    from sa_calendar c
+    from u_dw_ext_app.sa_calendar c
     where 
         c.date_id=CAST((TO_CHAR(BEG_OF_CAL_YEAR , 'MM')
         ||TO_CHAR(BEG_OF_CAL_YEAR , 'DD')
@@ -127,6 +127,7 @@ create table u_dw_data.t_year as
 ----------------------------------------------------------------------------------    
 --create dim_date
 --drop table u_dw_dim_tax.dim_date;
+delete from u_dw_dim_tax.dim_date;
 CREATE TABLE u_dw_dim_tax.dim_date as
 select * from 
       u_dw_data.t_day d
