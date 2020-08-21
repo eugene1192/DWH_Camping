@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "SSIS_ORA_U3M1", "SSIS_ORA_U3M1\SSIS_ORA_U3M1.dtproj", "{EE3FF5E2-733E-47D1-A03C-8EAB8B61CB61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE3FF5E2-733E-47D1-A03C-8EAB8B61CB61}.Development|Default.ActiveCfg = Development
+		{EE3FF5E2-733E-47D1-A03C-8EAB8B61CB61}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66CA3B2B-2F85-41CD-8F2A-695C066B862F}
+	EndGlobalSection
+EndGlobal

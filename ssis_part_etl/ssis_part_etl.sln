@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30330.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{159641D6-6404-4A2A-AE62-294DE0FE8301}") = "ssis_part_etl", "ssis_part_etl.dtproj", "{FA86142A-95D0-421F-A787-01969E3D702D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Azure|Default = Azure|Default
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA86142A-95D0-421F-A787-01969E3D702D}.Azure|Default.ActiveCfg = Azure
+		{FA86142A-95D0-421F-A787-01969E3D702D}.Azure|Default.Build.0 = Azure
+		{FA86142A-95D0-421F-A787-01969E3D702D}.Development|Default.ActiveCfg = Development
+		{FA86142A-95D0-421F-A787-01969E3D702D}.Development|Default.Build.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19E19438-E67A-4E37-B4E7-F1901F030F71}
+	EndGlobalSection
+EndGlobal

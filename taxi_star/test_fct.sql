@@ -72,7 +72,6 @@ Group by
     , dim_geo_id
 Order by month_id;
  
-
---delete from  u_dw_fct_tax.fct_driv_month ;
---truncate table  u_dw_fct_tax.fct_driv_month ;
---select * from u_dw_fct_tax.fct_driv_month ;
+EXEC dbms_stats.gather_table_stats('U_DW_DIM_TAX','DIM_VEHICLE_SCD',cascade=>TRUE);
+select * from u_dw_fct_tax.fct_driv_month;
+select * from U_DW_FCT_TAX.fct_vehcl_month;

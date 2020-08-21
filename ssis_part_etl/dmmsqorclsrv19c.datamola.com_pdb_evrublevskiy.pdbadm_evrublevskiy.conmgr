@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="dmmsqorclsrv19c.datamola.com_pdb_evrublevskiy.pdbadm_evrublevskiy"
+  DTS:DTSID="{988D5FF2-1076-4C62-869F-A8D76160E57B}"
+  DTS:CreationName="ADO.NET:System.Data.OracleClient.OracleConnection, System.Data.OracleClient, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <DTS:PropertyExpression
+    DTS:Name="ConnectionString">@[$Project::Dmmsqorclsrv19cDatamolaCom_pdb_evrublevskiyPdbadm_evrublevskiy_ConnectionString]</DTS:PropertyExpression>
+  <DTS:PropertyExpression
+    DTS:Name="ServerName">@[$Project::ServerName_lan]</DTS:PropertyExpression>
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectionString="Data Source=10.6.0.35/pdb_evrublevskiy;User ID=pdbadm_evrublevskiy;Connection type =ADO .NET;Persist Security Info=True;Unicode=True;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

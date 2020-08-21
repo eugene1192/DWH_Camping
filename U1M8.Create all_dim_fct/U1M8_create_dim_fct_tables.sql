@@ -367,7 +367,9 @@ SIZE 500M
   IDENTIFIED BY "1"
     DEFAULT TABLESPACE ts_fct_tax_month_01 QUOTA unlimited ON ts_fct_tax_month_01;
 grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_fct_tax;
-
+/*==============================================================*/
+/* Table: "fct_driv_month"                                        */
+/*==============================================================*/
 
 --drop table u_dw_fct_tax.fct_driv_month; 
   CREATE TABLE u_dw_fct_tax.fct_driv_month (
@@ -385,7 +387,7 @@ grant CONNECT,CREATE PUBLIC SYNONYM,DROP PUBLIC SYNONYM,RESOURCE to u_dw_fct_tax
     currency           VARCHAR2(20 BYTE),
     dim_geo_id         VARCHAR2(40 BYTE),
     insert_dt      TIMESTAMP,
-    update_dt      TIMESTAMP
+--    update_dt      TIMESTAMP
 )
 
 TABLESPACE ts_fct_tax_month_01;
@@ -401,6 +403,47 @@ END;
 
 CREATE TRIGGER u_dw_fct_tax.fct_driv_month_update_trig BEFORE
     UPDATE ON u_dw_fct_tax.fct_driv_month
+    FOR EACH ROW
+BEGIN
+    :new.update_dt := sysdate;
+END;
+
+/*==============================================================*/
+/* Table: "fct_vehcl_month"                                        */
+/*==============================================================*/
+
+--drop table u_dw_fct_tax.fct_vehcl_month; 
+  CREATE TABLE u_dw_fct_tax.fct_vehcl_month (
+    dim_month_id       NUMBER(*, 0),
+    dim_vehcl_id       NUMBER,
+    tot_distane        NUMBER,
+    distance_measure   VARCHAR2(20 BYTE),
+    cnt_finish_orders  NUMBER,
+    cnt_cancel_orders  NUMBER,
+    total_orders       NUMBER,
+    avg_raiting        NUMBER,
+    percent_finished   VARCHAR2(42 BYTE),
+    percent_canceled   VARCHAR2(42 BYTE),
+    total_coast        NUMBER,
+    currency           VARCHAR2(20 BYTE),
+    dim_geo_id         VARCHAR2(40 BYTE),
+    insert_dt      TIMESTAMP,
+   -- update_dt      TIMESTAMP
+)
+
+TABLESPACE ts_fct_tax_month_01;
+
+CREATE TRIGGER u_dw_fct_tax.fct_vehcl_month_insert_trig BEFORE
+    INSERT ON u_dw_fct_tax.fct_vehcl_month
+    FOR EACH ROW
+BEGIN
+    :new.insert_dt := sysdate;
+END;
+
+--DROP TRIGGER  u_dw_fct_tax.fct_driv_month_update_trig;
+
+CREATE TRIGGER u_dw_fct_tax.fct_vehcl_month_update_trig BEFORE
+    UPDATE ON u_dw_fct_tax.fct_vehcl_month
     FOR EACH ROW
 BEGIN
     :new.update_dt := sysdate;

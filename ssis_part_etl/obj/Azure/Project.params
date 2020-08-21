@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<SSIS:Parameters xmlns:SSIS="www.microsoft.com/SqlServer/SSIS">
+  <SSIS:Parameter
+    SSIS:Name="Dmmsqorclsrv19cDatamolaCom_internet">
+    <SSIS:Properties>
+      <SSIS:Property
+        SSIS:Name="ID">{2c3f50e1-9b90-412c-a2e9-1dd82282553a}</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="CreationName"></SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="Description">Connection to datamola from internet</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="IncludeInDebugDump">0</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="Required">0</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="Sensitive">0</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="Value">Data Source=dmmsqorclsrv19c.datamola.com/pdb_evrublevskiy;User ID=pdbadm_evrublevskiy;Persist Security Info=True;Unicode=True;</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="DataType">18</SSIS:Property>
+    </SSIS:Properties>
+  </SSIS:Parameter>
+  <SSIS:Parameter
+    SSIS:Name="Dmmsqorclsrv19cDatamolaCom_lan">
+    <SSIS:Properties>
+      <SSIS:Property
+        SSIS:Name="ID">{68e9aac9-3a37-4d6e-8074-74a99a8d00cd}</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="CreationName"></SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="Description">Dmmsqorclsrv19cDatamolaCom lan connection</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="IncludeInDebugDump">0</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="Required">0</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="Sensitive">0</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="Value">Data Source=10.6.0.35/pdb_evrublevskiy;User ID=pdbadm_evrublevskiy;Persist Security Info=True;Unicode=True;</SSIS:Property>
+      <SSIS:Property
+        SSIS:Name="DataType">18</SSIS:Property>
+    </SSIS:Properties>
+  </SSIS:Parameter>
+</SSIS:Parameters>

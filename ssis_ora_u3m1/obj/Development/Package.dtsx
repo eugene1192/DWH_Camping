@@ -1,0 +1,620 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/6/2020 7:09:58 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="WIN-N1K9II26C47"
+  DTS:CreatorName="WIN-N1K9II26C47\User"
+  DTS:DTSID="{39B1112F-85F6-4942-89D4-80D282B460FE}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="15.0.2000.123"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Package"
+  DTS:PackageType="5"
+  DTS:VersionBuild="8"
+  DTS:VersionGUID="{1BD16583-0728-4BC0-B732-5A11904418F6}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[dmmsqorclsrv19c.datamola.com/pdb_evrublevskiy.pdbadm_evrublevskiy 1]"
+      DTS:CreationName="ADO.NET:System.Data.OracleClient.OracleConnection, System.Data.OracleClient, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+      DTS:DTSID="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+      DTS:ObjectName="dmmsqorclsrv19c.datamola.com/pdb_evrublevskiy.pdbadm_evrublevskiy 1">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=dmmsqorclsrv19c.datamola.com/pdb_evrublevskiy;User ID=pdbadm_evrublevskiy;Unicode=True;">
+          <DTS:Password
+            DTS:Name="Password"
+            Sensitive="1"
+            Encrypted="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAh0p+lnr8lEOjl2ilXGLctAAAAAAIAAAARABUAFMAAAAQZgAAAAEAACAAAAByGKrPN6dvCjHMTdnE59BQgizofkDPhs6Gl3kR3czjPQAAAAAOgAAAAAIAACAAAAAWcjf7EmWoNMQlSWza/9lm+pckVNWuohGlHPeQqRE4cTAAAAArGpWs+9Emzz5GZGNhmcfwk0tzELyeKdsxVqMoxdPrrFO79U0HNVLAbHC1j62KBClAAAAAVmlG/pCsFYDuVGAlYse2WzWWpRG/ujClQHYFH8BDhd9z939nW2m7u3z7LWO1iaIr6blbhdoGDIAK/xxpqf2qKA</DTS:Password>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\delete all dim"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{7DA37688-3072-47FB-A17C-1AE89BB4145A}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="delete all dim"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN  &#xA;   delete_all_data.delete_dim_driver_data; --delete all from dim_driver&#xA;   delete_all_data.delete_dim_vehicle; --delete all from dim_vehicle&#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\delete all dw"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{91F57B67-A1B3-449E-9411-DD734D957D08}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="delete all dw"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN&#xA;   delete_all_data.delete_t_vehicle_data; --delete t_vehicle&#xA;   delete_all_data.delete_t_trip_data; --delete t_trip&#xA;   delete_all_data.delete_t_customer_data; --delete t_customer&#xA;   delete_all_data.delete_t_driver_data;  --delete t_driver &#xA;  &#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\delete all fct"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{B30BD3CA-9A35-48A8-87B2-82DF304E7DA6}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="delete all fct"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN&#xA;    delete_all_data.delete_all_fct_data;&#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load  fct driver month"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{96E3F4CC-3D48-48BF-AF4A-BD2B4EE96490}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load  fct driver month"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN&#xA;    load_fct_driv_moth.load_fct_drv;&#xA;    load_fct_vehcl_moth.load_fct_vehcl;&#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load all customer"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{3D0B8726-F765-4D26-A0D4-0D7639D57DA4}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load all customer"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN &#xA;    load_all_customer.ext_sa_t_customer;&#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load all date tables"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{BC0F2D31-772D-4D56-8105-47EAE1C2D2AB}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load all date tables"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN&#xA;    delete_all_data.delete_dim_date; -- delete all from dim_date&#xA;    delete_all_data.t_all_t_date; -- delete all t_time tables &#xA;    load_t_dim_date.loat_t_day;&#xA;    load_t_dim_date.load_t_week;&#xA;    load_t_dim_date.load_t_month;  --not Use twice&#xA;    load_t_dim_date.load_t_qarter;&#xA;    load_t_dim_date.load_t_year;&#xA;    load_t_dim_date.load_dim_date;&#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load all trip data"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{8D54A96B-B1E9-485E-8264-D276447B3078}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load all trip data"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN&#xA;    load_all_trip.ext_sa_t_trip;&#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load all vehicle table"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{CC765E0A-F2DF-4083-B876-9C717F84B0B3}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load all vehicle table"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN &#xA;    load_all_vehicle.ext_sa_t_vehicke;&#xA;    load_all_vehicle.t_dim_vehicle;&#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load driver tables"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{1BCBBD48-AE71-4D85-86A7-1161E8CF48FF}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load driver tables"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN &#xA;    load_all_driver.ext_sa_t_driver;&#xA;    load_all_driver.load_driv_stat;&#xA;    load_all_driver.load_link_driv_list;&#xA;&#xA;    load_all_driver.load_dim_drv; &#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load geo dimension"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{E0BCED99-A021-432B-ACEF-B78823673C2F}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load geo dimension"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2019; © 2019 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{2FEA8FA9-9277-48D3-A982-D1DA8C150CA0}"
+          SQLTask:SqlStatementSource="BEGIN&#xA;    delete_all_data.delete_dim_geo; --delete from dim_geo_obj_scd&#xA;    load_dim_geo.load_dim_geo_obg; --not Use twice because create new id  &#xA;END;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение]"
+      DTS:CreationName=""
+      DTS:DTSID="{5A056E35-F1F5-4019-B374-A1698C2ACFD8}"
+      DTS:From="Package\delete all dw"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение"
+      DTS:To="Package\delete all dim" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{E237C29B-AE71-440D-A740-0F9F35879BF5}"
+      DTS:From="Package\delete all dim"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение 1"
+      DTS:To="Package\delete all fct" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{ABE0DC40-9AA3-4972-BBD5-E9EB52BA434F}"
+      DTS:From="Package\delete all fct"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение 2"
+      DTS:To="Package\load all date tables" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{3724B92D-5905-4E9A-8D02-77ACFF0CA3BB}"
+      DTS:From="Package\load all date tables"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение 3"
+      DTS:To="Package\load geo dimension" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{E9B26664-AF19-43F8-9DF4-EC797F4A316B}"
+      DTS:From="Package\load geo dimension"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение 4"
+      DTS:To="Package\load driver tables" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{9A360FB8-EF1B-4BEE-848D-51442E1FCBD1}"
+      DTS:From="Package\load driver tables"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение 5"
+      DTS:To="Package\load all vehicle table" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение 6]"
+      DTS:CreationName=""
+      DTS:DTSID="{F923DDCB-272F-4C8A-B6D3-4BD6DE275948}"
+      DTS:From="Package\load all vehicle table"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение 6"
+      DTS:To="Package\load all customer" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение 7]"
+      DTS:CreationName=""
+      DTS:DTSID="{939BD913-3A9C-49D6-9096-9C369F71F0F0}"
+      DTS:From="Package\load all customer"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение 7"
+      DTS:To="Package\load all trip data" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Ограничение 8]"
+      DTS:CreationName=""
+      DTS:DTSID="{CF4170BF-3635-4730-9F4E-07EC77028669}"
+      DTS:From="Package\load all trip data"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Ограничение 8"
+      DTS:To="Package\load  fct driver month" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--В данном разделе CDATA содержатся сведения о макете пакета. В данном разделе содержатся сведения о координатах (x,y), ширине и высоте.-->
+<!--В случае возникновения ошибки при редактировании этого раздела вручную его можно удалить. -->
+<!--Пакет можно загрузить обычным образом, но прежние сведения о макете будут утеряны, и конструктор автоматически перераспределит элементы в области конструктора.-->
+<Objects
+  Version="8">
+  <!--Все приведенные ниже узлы будут содержать свойства, не влияющие на поведение среды выполнения.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="140,42"
+          Id="Package\delete all dw"
+          TopLeft="45,29" />
+        <NodeLayout
+          Size="144,42"
+          Id="Package\delete all dim"
+          TopLeft="48,122" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение]"
+          TopLeft="115,71">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-17.6666666666667,51"
+              Start="0,0"
+              End="-17.6666666666667,43.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.2637362637363" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26.2637362637363"
+                    Point2="0,30.2637362637363"
+                    Point3="-4,30.2637362637363" />
+                  <mssgle:LineSegment
+                    End="-13.6666666666667,30.2637362637363" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-13.6666666666667,30.2637362637363"
+                    Point2="-17.6666666666667,30.2637362637363"
+                    Point3="-17.6666666666667,34.2637362637363" />
+                  <mssgle:LineSegment
+                    End="-17.6666666666667,43.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="138,42"
+          Id="Package\delete all fct"
+          TopLeft="206,29" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение 1]"
+          TopLeft="142.666666666667,122">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="110.666666666667,-51"
+              Start="0,0"
+              End="110.666666666667,-43.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-21.4850264239577" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-21.4850264239577"
+                    Point2="0,-25.4850264239577"
+                    Point3="4,-25.4850264239577" />
+                  <mssgle:LineSegment
+                    End="106.666666666667,-25.4850264239577" />
+                  <mssgle:CubicBezierSegment
+                    Point1="106.666666666667,-25.4850264239577"
+                    Point2="110.666666666667,-25.4850264239577"
+                    Point3="110.666666666667,-29.4850264239577" />
+                  <mssgle:LineSegment
+                    End="110.666666666667,-43.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="171,42"
+          Id="Package\load all date tables"
+          TopLeft="214,123" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение 2]"
+          TopLeft="298.083333333333,71">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,52"
+              Start="0,0"
+              End="0,44.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="174,42"
+          Id="Package\load geo dimension"
+          TopLeft="388,30" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение 3]"
+          TopLeft="326.666666666667,123">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="148.333333333333,-51"
+              Start="0,0"
+              End="148.333333333333,-43.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-16.683661645423" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-16.683661645423"
+                    Point2="0,-20.683661645423"
+                    Point3="4,-20.683661645423" />
+                  <mssgle:LineSegment
+                    End="144.333333333333,-20.683661645423" />
+                  <mssgle:CubicBezierSegment
+                    Point1="144.333333333333,-20.683661645423"
+                    Point2="148.333333333333,-20.683661645423"
+                    Point3="148.333333333333,-24.683661645423" />
+                  <mssgle:LineSegment
+                    End="148.333333333333,-43.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="163,42"
+          Id="Package\load driver tables"
+          TopLeft="430,121" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение 4]"
+          TopLeft="502.666666666667,72">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="8.83333333333337,49"
+              Start="0,0"
+              End="8.83333333333337,41.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.8678815489749" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.8678815489749"
+                    Point2="0,19.867881548975"
+                    Point3="4,19.867881548975" />
+                  <mssgle:LineSegment
+                    End="4.83333333333337,19.867881548975" />
+                  <mssgle:CubicBezierSegment
+                    Point1="4.83333333333337,19.867881548975"
+                    Point2="8.83333333333337,19.867881548975"
+                    Point3="8.83333333333337,23.867881548975" />
+                  <mssgle:LineSegment
+                    End="8.83333333333337,41.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="178,42"
+          Id="Package\load all vehicle table"
+          TopLeft="598.75,33.75" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение 5]"
+          TopLeft="537.333333333333,121">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="150.416666666667,-45.25"
+              Start="0,0"
+              End="150.416666666667,-37.75">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-14.3639125151883" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-14.3639125151883"
+                    Point2="0,-18.3639125151883"
+                    Point3="4,-18.3639125151883" />
+                  <mssgle:LineSegment
+                    End="146.416666666667,-18.3639125151883" />
+                  <mssgle:CubicBezierSegment
+                    Point1="146.416666666667,-18.3639125151883"
+                    Point2="150.416666666667,-18.3639125151883"
+                    Point3="150.416666666667,-22.3639125151883" />
+                  <mssgle:LineSegment
+                    End="150.416666666667,-37.75" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="162,42"
+          Id="Package\load all customer"
+          TopLeft="622.5,125" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение 6]"
+          TopLeft="716.083333333333,75.75">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-12.5833333333334,49.25"
+              Start="0,0"
+              End="-12.5833333333334,41.75">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.9632516703786" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.9632516703786"
+                    Point2="0,19.9632516703786"
+                    Point3="-4,19.9632516703786" />
+                  <mssgle:LineSegment
+                    End="-8.58333333333337,19.9632516703786" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-8.58333333333337,19.9632516703786"
+                    Point2="-12.5833333333334,19.9632516703786"
+                    Point3="-12.5833333333334,23.9632516703786" />
+                  <mssgle:LineSegment
+                    End="-12.5833333333334,41.75" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="157,42"
+          Id="Package\load all trip data"
+          TopLeft="236.25,207.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение 7]"
+          TopLeft="703.5,167">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-388.75,40.5"
+              Start="0,0"
+              End="-388.75,33">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,16.25"
+                    Point2="0,20.25"
+                    Point3="-4,20.25" />
+                  <mssgle:LineSegment
+                    End="-384.75,20.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-384.75,20.25"
+                    Point2="-388.75,20.25"
+                    Point3="-388.75,24.25" />
+                  <mssgle:LineSegment
+                    End="-388.75,33" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="181,42"
+          Id="Package\load  fct driver month"
+          TopLeft="495,210" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Ограничение 8]"
+          TopLeft="393.25,229.75">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="101.75,0"
+              Start="0,0"
+              End="94.25,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="94.25,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
